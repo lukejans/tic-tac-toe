@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- stylesheets -->
+    <link rel="stylesheet" href="./styles/style.css" />
+    <!-- favicon -->
+    <link rel="icon" type="svg" sizes="32x32" href="./assets/favicon.svg" />
+    <!-- scripts -->
+    <script type="module" src="./src/main.js"></script>
+    <!-- title -->
+    <title>Tic Tac Toe</title>
+  </head>
+  <body>
+    <main>
+      <section class="start-screen-container">
+        <p class="mode-title">mode:</p>
+
+        <div class="mode-container">
+          <button id="pvp" class="mode">PvP</button>
+          <button id="pvc" class="mode">PvC</button>
+        </div>
+
+        <button id="start" class="start-btn">start</button>
+      </section>
+
+      <section class="game-container hide">
+        <div class="game-board">
+          <div id="0" class="box"></div>
+          <div id="1" class="box"></div>
+          <div id="2" class="box"></div>
+
+          <div id="3" class="box"></div>
+          <div id="4" class="box"></div>
+          <div id="5" class="box"></div>
+
+          <div id="6" class="box"></div>
+          <div id="7" class="box"></div>
+          <div id="8" class="box"></div>
+        </div>
+
+        <button id="reset" class="reset-btn">reset</button>
+      </section>
+    </main>
+  </body>
+</html>
