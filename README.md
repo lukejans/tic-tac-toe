@@ -1,10 +1,18 @@
-# **[Project: Tic Tac Toe](https://www.theodinproject.com/lessons/node-path-javascript-tic-tac-toe)**
+# **📁 [Project: Tic Tac Toe](https://www.theodinproject.com/lessons/node-path-javascript-tic-tac-toe)**
 
-## **Project Description**
+```
+   0 | 1 | 2
+  ---+---+---
+   3 | 4 | 5
+  ---+---+---
+   6 | 7 | 8
+```
+
+## **📖 Project Description**
 
 This simple web based game was crafted while completing the odin project curriculum in the **[full-stack-javascript]()** path.
 
-## **Game Description:**
+## **🕹️ Game Description:**
 
 Browser based Tic Tac Toe game with an alternative mode: **_Shuffle_**. In the future, **_Shuffle_** will be the default game with the option to play normal tic tac toe when you want.
 
@@ -25,4 +33,3 @@ Browser based Tic Tac Toe game with an alternative mode: **_Shuffle_**. In the f
 #
 
 **_`coding in progress . . .`_**
-
