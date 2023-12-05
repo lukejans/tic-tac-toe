@@ -12,21 +12,15 @@ const buttons = {
   pvc: document.querySelector('#pvc'),
 };
 /**
- * Tic Tac Toe Board
+ * Tic Tac Toe Game Board
  *
- *    |   |
- *  --+---+--
- *    |   |
- *  --+---+--
- *    |   |
+ *   0 | 1 | 2
+ *  ---+---+---
+ *   3 | 4 | 5
+ *  ---+---+---
+ *   6 | 7 | 8
  */
 const gameBoard = components.gameScreen.querySelectorAll('.box');
 
-/**
- * UI Dependency Injection
- *
- * @param {gameBoard} array of each position on game board
- * @param {components} object for toggling between ui screens
- * @param {buttons} object for buttons in ui
- */
+// UI Dependency Injection
 controller.init(gameBoard, components, buttons);
