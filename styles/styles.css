@@ -1,0 +1,80 @@
+/* main styles */
+body {
+  background-color: rgb(40, 40, 40);
+  color: white;
+}
+button {
+  color: white;
+  background-color: rgb(56, 56, 56);
+  border: 1px solid black;
+  font-family: monospace;
+  cursor: pointer;
+  margin: 10px;
+}
+button:hover {
+  border: 0.5px solid white;
+}
+
+/* start screen styles */
+.start-screen-container {
+  font-family: monospace;
+}
+
+.mode-container {
+  display: flex;
+  gap: 15px;
+}
+.mode {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.mode:hover {
+  border: 0.5px solid white;
+}
+
+/* game board styles */
+.game-board {
+  font-family: monospace;
+  font-size: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  height: 156px;
+  width: 156px;
+  border: 1px solid gray;
+}
+.box {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  border: 1px solid gray;
+}
+.box:hover {
+  cursor: pointer;
+  border: 1px solid white;
+  background-color: rgb(198, 198, 198);
+  color: black;
+}
+
+/* start & reset button */
+.start-btn,
+.reset-btn {
+  width: 125px;
+  height: 25px;
+  margin: 10px 20px;
+}
+
+/* color positions of win */
+.win {
+  color: greenyellow;
+}
+
+/* toggle ui components */
+.hide {
+  display: none;
+}
