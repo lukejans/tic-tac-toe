@@ -1,5 +1,7 @@
 # **📁 [Project: Tic Tac Toe](https://www.theodinproject.com/lessons/node-path-javascript-tic-tac-toe)**
 
+<div align="center">
+
 ```
    0 | 1 | 2
   ---+---+---
@@ -7,6 +9,8 @@
   ---+---+---
    6 | 7 | 8
 ```
+
+</div>
 
 ## **📖 Project Description**
 
