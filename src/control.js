@@ -15,6 +15,11 @@ const controller = (() => {
         _handlePlayerClick(gameBoard, box);
       });
     });
+
+    buttons.start.addEventListener('click', function () {
+      ui.toggleGameDisplay(components, buttons.start);
+      console.log('game started');
+    });
   }
 
   function _handlePlayerClick(gameBoard, box) {
