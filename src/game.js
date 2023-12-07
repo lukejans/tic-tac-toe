@@ -25,6 +25,10 @@ const game = (() => {
   /**
    * Player Creation Factory
    *
+   * factory function creates players and gives the ai player
+   * a property of `isBot`. buildPlayers() is a helper function
+   * to create players based on user mode selection as well as a
+   * function to get the players individually.
    *
    */
   let _player1, _player2;
