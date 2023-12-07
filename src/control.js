@@ -18,8 +18,14 @@ const controller = (() => {
     });
     // Start Button Handler
     buttons.start.addEventListener('click', function () {
+      if (game.getMode() == '') {
+        console.log('select a game mode to continue');
+        return;
+      }
+      game.buildPlayers();
       ui.toggleGameDisplay(components, buttons.start);
       console.log('game started');
+      console.log({ player1: game.getPlayer(1), player2: game.getPlayer(2) });
     });
     // PvP Mode Selection
     buttons.pvp.addEventListener('click', function () {
