@@ -5,6 +5,10 @@ const ui = (() => {
     components.gameScreen.classList.toggle('hide');
   }
 
+  /**
+   * Prevent Double Click
+   * @param {btn} - button to disable
+   */
   function _temporarilyDisableBtn(btn) {
     btn.disabled = true;
     console.log(`${btn.id} btn temporarily disabled`);
