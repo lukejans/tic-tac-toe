@@ -26,7 +26,7 @@ const ui = (() => {
    *
    * when a terminal state is found this function will be
    * executed once and will color the winning positions with
-   * a 0.5s delay color update.
+   * a 0.5s delay between color updates.
    * @param {Array} gameBoard - full board ui
    * @param {Object} state - get from game module
    */
