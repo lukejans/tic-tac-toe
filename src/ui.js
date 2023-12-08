@@ -18,6 +18,10 @@ const ui = (() => {
     }, 1000);
   }
 
-  return { toggleGameDisplay };
+  function displayMove(state, box) {
+    box.textContent = state.board[box.id];
+  }
+
+  return { displayMove, toggleGameDisplay };
 })();
 export { ui };

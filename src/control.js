@@ -14,6 +14,7 @@ const controller = (() => {
       box.addEventListener('click', function () {
         if (game.moveIsLegal(box.id)) {
           game.playMove(game.getCurrentPlayer(), box.id);
+          ui.displayMove(game.getState(), box);
           game.switchPlayers();
         }
       });
