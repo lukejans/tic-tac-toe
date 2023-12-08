@@ -5,10 +5,6 @@ const ui = (() => {
     components.gameScreen.classList.toggle('hide');
   }
 
-  /**
-   * Prevent Double Click
-   * @param {btn} - button to disable
-   */
   function _temporarilyDisableBtn(btn) {
     btn.disabled = true;
     setTimeout(function () {
@@ -20,17 +16,23 @@ const ui = (() => {
     box.textContent = state.board[box.id];
   }
 
-  /**
-   * Activate CSS for Winning Positions
-   */
-  const colorPositionsOnWin = (gameBoard, state) => {
+  function colorPositionsOnWin(gameBoard, state) {
     if (state.isTerminal) {
       for (let i = 0; i < 3; i++) {
-        gameBoard[state.winMoves[i]].classList.add('win');
+        setTimeout(() => {
+          gameBoard[state.winMoves[i]].classList.add('win');
+        }, i * 500);
       }
     }
-  };
+  }
 
-  return { toggleGameDisplay, displayMove, colorPositionsOnWin };
+  function resetUI(gameBoard) {
+    for (let i = 0; i < 9; i++) {
+      gameBoard[i].textContent = '';
+      gameBoard[i].classList.remove('win');
+    }
+  }
+
+  return { toggleGameDisplay, displayMove, colorPositionsOnWin, resetUI };
 })();
 export { ui };

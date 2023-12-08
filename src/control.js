@@ -25,7 +25,14 @@ const controller = (() => {
       ui.toggleGameDisplay(components, buttons.start);
 
       console.log('game started');
-      console.log(game.getPlayers());
+      console.log(game.getPlayers()); //!remove
+    });
+
+    buttons.reset.addEventListener('click', function () {
+      game.resetState();
+      ui.resetUI(gameBoard);
+      ui.toggleGameDisplay(components, buttons.reset);
+      console.log('game reset');
     });
 
     buttons.pvp.addEventListener('click', function () {
@@ -38,14 +45,16 @@ const controller = (() => {
   }
 
   /**
-   *  Game Flow Controller
+   *  Game Flow Handler
    */
   function _handleGameFlow(gameBoard, box) {
     if (game.getState().isTerminal) {
       return;
     }
+
     let curPlayer = game.getCurPlayer();
     let isLegalMove = typeof game.getState().board[box.id] === 'number';
+
     if (isLegalMove) {
       game.playMove(curPlayer, box.id);
       game.checkForWinner(curPlayer);
