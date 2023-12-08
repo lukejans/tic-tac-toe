@@ -29,7 +29,6 @@ const game = (() => {
    * a property of `isBot`. buildPlayers() is a helper function
    * to create players based on user mode selection as well as a
    * function to get the players individually.
-   *
    */
   let _player1, _player2;
 
@@ -77,6 +76,10 @@ const game = (() => {
     console.log(_board);
   }
 
+  function moveIsLegal(move) {
+    return typeof _board[move] === 'number';
+  }
+
   function switchPlayers() {
     _player1.turn = !_player1.turn;
     _player2.turn = !_player2.turn;
@@ -88,6 +91,7 @@ const game = (() => {
 
   return {
     playMove,
+    moveIsLegal,
     switchPlayers,
     getCurrentPlayer,
     buildPlayers,

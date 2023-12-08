@@ -12,8 +12,10 @@ const controller = (() => {
   function init(gameBoard, components, buttons) {
     gameBoard.forEach((box) => {
       box.addEventListener('click', function () {
-        game.playMove(game.getCurrentPlayer(), box.id);
-        game.switchPlayers();
+        if (game.moveIsLegal(box.id)) {
+          game.playMove(game.getCurrentPlayer(), box.id);
+          game.switchPlayers();
+        }
       });
     });
 
