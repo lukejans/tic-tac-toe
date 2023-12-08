@@ -1,44 +1,26 @@
 # 📕 notes
 
-## 👨‍💻 old code
+### minimax
 
-### control.js
+#### functions to build
 
-```javascript
-const init = (resetBtn) => {
-  resetBtn.addEventListener('click', function () {
-    game.resetState();
-    ui.resetUI(boxes);
-    ui.toggleGameDisplay(startScreen, gameScreen);
-    console.log('game reset');
-  });
-};
-```
-
-### game.js
+- `simulateMove()`
+- `isTerminal()`
+- `getPossibleMoves()`
+- `evaluate()`
 
 ```javascript
-/**
- * Minimax Helpers
- *
- * * When Invoked from controller: state = _board
- */
-function _getPossibleMoves(state) {
-  return state.filter((item) => !['x', 'o'].includes(item));
-}
-
-function _simulateMove(state, move) {}
-
-function _isTerminal(state) {}
-
-function _evaluate(state) {}
-
 /**
  * Minimax Algorithm
+ *
+ * function _getPossibleMoves(state) {
+ *   return state.filter((item) => !['x', 'o'].includes(item));
+ * }
  *
  * @param {*} state tracks the game board
  * @param {*} depth tracks recursive calls
  * @param {*} maximizingPlayer boolean switches players
+ *
  * @returns best move
  */
 function minimax(state, depth, maximizingPlayer = true) {
@@ -62,19 +44,4 @@ function minimax(state, depth, maximizingPlayer = true) {
     return minEval;
   }
 }
-```
-
-### ui.js
-
-```javascript
-const ui = (() => {
-  const resetUI = (boxes) => {
-    for (let i = 0; i < 9; i++) {
-      boxes[i].textContent = '';
-      boxes[i].classList.remove('win');
-    }
-  };
-})();
-
-export { ui };
 ```
