@@ -12,11 +12,7 @@ const controller = (() => {
   function init(gameBoard, components, buttons) {
     gameBoard.forEach((box) => {
       box.addEventListener('click', function () {
-        if (game.moveIsLegal(box.id)) {
-          game.playMove(game.getCurrentPlayer(), box.id);
-          ui.displayMove(game.getState(), box);
-          game.switchPlayers();
-        }
+        _handleGameFlow(gameBoard, box);
       });
     });
 
@@ -39,6 +35,24 @@ const controller = (() => {
     buttons.pvc.addEventListener('click', function () {
       game.setMode('pvc');
     });
+  }
+
+  /**
+   *  Game Flow Controller
+   */
+  function _handleGameFlow(gameBoard, box) {
+    if (game.getState().isTerminal) {
+      return;
+    }
+    let curPlayer = game.getCurPlayer();
+    let isLegalMove = typeof game.getState().board[box.id] === 'number';
+    if (isLegalMove) {
+      game.playMove(curPlayer, box.id);
+      game.checkForWinner(curPlayer);
+      game.switchPlayers();
+      ui.displayMove(game.getState(), box);
+      ui.colorPositionsOnWin(gameBoard, game.getState());
+    }
   }
 
   return { init };

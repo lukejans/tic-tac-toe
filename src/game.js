@@ -26,9 +26,7 @@ const game = (() => {
    * Player Creation Factory
    *
    * factory function creates players and gives the ai player
-   * a property of `isBot`. buildPlayers() is a helper function
-   * to create players based on user mode selection as well as a
-   * function to get the players individually.
+   * a property of `ai`.
    */
   let _player1, _player2;
 
@@ -36,8 +34,9 @@ const game = (() => {
     let player = {
       sign: sign,
       score: 0,
-      moveIndices: [],
+      moves: [],
       turn: false,
+      winner: false,
     };
     if (isAi) {
       player.ai = true;
@@ -59,6 +58,7 @@ const game = (() => {
     }
   }
 
+  //!remove
   function getPlayers() {
     const players = {
       player1: _player1,
@@ -71,13 +71,13 @@ const game = (() => {
    * Play Move
    *
    */
+  let _allPlayerMoves = [];
+
   function playMove(player, move) {
+    player.moves.push(_board[move]);
+    _allPlayerMoves.push(_board[move]);
     _board[move] = player.sign;
     console.log(_board);
-  }
-
-  function moveIsLegal(move) {
-    return typeof _board[move] === 'number';
   }
 
   function switchPlayers() {
@@ -85,9 +85,48 @@ const game = (() => {
     _player2.turn = !_player2.turn;
   }
 
-  function getCurrentPlayer() {
+  function getCurPlayer() {
     return _player1.turn ? _player1 : _player2;
   }
+
+  /**
+   * Check For a Winner
+   *
+   * looks for all terminal states (win, lose, tie)
+   */
+  let _winningMoves = [];
+  let _terminalState = '';
+
+  const checkForWinner = (player) => {
+    let winConditions = [
+      [0, 1, 2], // Top row
+      [3, 4, 5], // Middle row
+      [6, 7, 8], // Bottom row
+      [0, 3, 6], // Left column
+      [1, 4, 7], // Middle column
+      [2, 5, 8], // Right column
+      [0, 4, 8], // Diagonal from top-left to bottom-right
+      [2, 4, 6], // Diagonal from top-right to bottom-left
+    ];
+
+    for (const condition of winConditions) {
+      player.winner = condition.every((number) =>
+        player.moves.includes(number)
+      );
+
+      if (player.winner) {
+        _winningMoves = condition;
+        _terminalState = player.sign;
+        console.log(`player ${player.sign} wins`);
+        return _terminalState;
+      }
+    }
+    if (!player.winner && _allPlayerMoves.length == 9) {
+      _terminalState = 'tie';
+      console.log('tie');
+      return 'tie';
+    }
+  };
 
   /**
    * Get State
@@ -97,6 +136,8 @@ const game = (() => {
   function getState() {
     let state = {
       board: _board,
+      winMoves: _winningMoves,
+      isTerminal: _terminalState,
     };
     return state;
   }
@@ -104,11 +145,11 @@ const game = (() => {
   return {
     getState,
     playMove,
-    moveIsLegal,
     switchPlayers,
-    getCurrentPlayer,
+    checkForWinner,
+    getCurPlayer,
     buildPlayers,
-    getPlayers,
+    getPlayers, //!remove
     getMode,
     setMode,
   };

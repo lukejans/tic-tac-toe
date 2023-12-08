@@ -11,10 +11,8 @@ const ui = (() => {
    */
   function _temporarilyDisableBtn(btn) {
     btn.disabled = true;
-    console.log(`${btn.id} btn temporarily disabled`);
     setTimeout(function () {
       btn.disabled = false;
-      console.log(`${btn.id} btn re-enabled`);
     }, 1000);
   }
 
@@ -22,6 +20,17 @@ const ui = (() => {
     box.textContent = state.board[box.id];
   }
 
-  return { displayMove, toggleGameDisplay };
+  /**
+   * Activate CSS for Winning Positions
+   */
+  const colorPositionsOnWin = (gameBoard, state) => {
+    if (state.isTerminal) {
+      for (let i = 0; i < 3; i++) {
+        gameBoard[state.winMoves[i]].classList.add('win');
+      }
+    }
+  };
+
+  return { toggleGameDisplay, displayMove, colorPositionsOnWin };
 })();
 export { ui };
