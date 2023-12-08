@@ -27,6 +27,9 @@ const game = (() => {
    *
    * factory function creates players and gives the ai player
    * a property of `ai`.
+   * @param {String} sign - `x` or `o`
+   * @param {Boolean} isAi - true if pvc is selected
+   * @returns {Object} new player instance
    */
   let _player1, _player2;
 
@@ -58,17 +61,14 @@ const game = (() => {
     }
   }
 
-  //!remove
-  function getPlayers() {
-    const players = {
-      player1: _player1,
-      player2: _player2,
-    };
-    return players;
-  }
-
   /**
-   * Play Move
+   * Play Desired Move
+   *
+   * modifies `_allPlayerMoves` and player objects to
+   * update moves made.`switchPlayers()` is called
+   * after to ensure proper game flow is maintained.
+   * @param {Object} player - from `getCurPlayer()`
+   * @param {Number} move - index of player move.
    */
   let _allPlayerMoves = [];
 
@@ -91,7 +91,10 @@ const game = (() => {
   /**
    * Check For a Winner
    *
-   * looks for all terminal states (win, lose, tie)
+   * checks to see if a player has won or tied.
+   * if so, returns the type of terminal state
+   * @param {Object} player - from `getCurPlayer()`
+   * @return {_terminalState} - `x`, `o`, `tie`
    */
   let _winningMoves = [];
   let _terminalState = '';
@@ -123,14 +126,16 @@ const game = (() => {
     if (!player.winner && _allPlayerMoves.length == 9) {
       _terminalState = 'tie';
       console.log('tie');
-      return 'tie';
+      return _terminalState;
     }
   };
 
   /**
-   * State Tracking
+   * Track Game State
    *
-   * gather game information to send to ui module
+   * gather game information and expose to controller
+   * module. Use cases are for managing game flow and
+   * updating UI.
    */
   function getState() {
     let state = {
@@ -148,6 +153,7 @@ const game = (() => {
     _terminalState = '';
   }
 
+  // All Public Functions
   return {
     getState,
     resetState,
@@ -156,7 +162,6 @@ const game = (() => {
     checkForWinner,
     getCurPlayer,
     buildPlayers,
-    getPlayers, //!remove
     getMode,
     setMode,
   };

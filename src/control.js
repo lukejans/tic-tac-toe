@@ -25,7 +25,6 @@ const controller = (() => {
       ui.toggleGameDisplay(components, buttons.start);
 
       console.log('game started');
-      console.log(game.getPlayers()); //!remove
     });
 
     buttons.reset.addEventListener('click', function () {
