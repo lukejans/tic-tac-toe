@@ -5,34 +5,14 @@
 ### control.js
 
 ```javascript
-const controller = (() => {
-  const init = (resetBtn) => {
-    resetBtn.addEventListener('click', function () {
-      game.resetState();
-      ui.resetUI(boxes);
-      ui.toggleGameDisplay(startScreen, gameScreen);
-      console.log('game reset');
-    });
-  };
-
-  /**
-   *
-   * Control Moves Made
-   *
-   * @param {*} boxes game board ui.
-   * @param {*} box individual locations on game board ui.
-   */
-  const _controlPlayerMove = (boxes, box) => {
-    if (game.moveIsLegal(box.id)) {
-      game.executeTurn(box.id);
-      ui.updateUI(boxes, box, game.getGameState());
-    }
-  };
-
-  return { init };
-})();
-
-export { controller };
+const init = (resetBtn) => {
+  resetBtn.addEventListener('click', function () {
+    game.resetState();
+    ui.resetUI(boxes);
+    ui.toggleGameDisplay(startScreen, gameScreen);
+    console.log('game reset');
+  });
+};
 ```
 
 ### game.js
