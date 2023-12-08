@@ -32,15 +32,19 @@ const game = (() => {
    *
    */
   let _player1, _player2;
+
   function Player(sign, isAi) {
     let player = {
       sign: sign,
       score: 0,
       moveIndices: [],
+      turn: false,
     };
-
     if (isAi) {
       player.ai = true;
+    }
+    if (sign == 'x') {
+      player.turn = true;
     }
 
     return player;
@@ -56,15 +60,41 @@ const game = (() => {
     }
   }
 
-  function getPlayer(player) {
-    if (player == 1) {
-      return _player1;
-    } else if (player == 2) {
-      return _player2;
-    }
+  function getPlayers() {
+    const players = {
+      player1: _player1,
+      player2: _player2,
+    };
+    return players;
   }
 
-  return { buildPlayers, getPlayer, getMode, setMode };
+  /**
+   * Play Move
+   *
+   */
+  function playMove(player, move) {
+    _board[move] = player.sign;
+    console.log(_board);
+  }
+
+  function switchPlayers() {
+    _player1.turn = !_player1.turn;
+    _player2.turn = !_player2.turn;
+  }
+
+  function getCurrentPlayer() {
+    return _player1.turn ? _player1 : _player2;
+  }
+
+  return {
+    playMove,
+    switchPlayers,
+    getCurrentPlayer,
+    buildPlayers,
+    getPlayers,
+    getMode,
+    setMode,
+  };
 })();
 
 export { game };
