@@ -89,7 +89,20 @@ const game = (() => {
     return _player1.turn ? _player1 : _player2;
   }
 
+  /**
+   * Get State
+   *
+   * gather game information to send to ui module
+   */
+  function getState() {
+    let state = {
+      board: _board,
+    };
+    return state;
+  }
+
   return {
+    getState,
     playMove,
     moveIsLegal,
     switchPlayers,
