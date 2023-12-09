@@ -89,6 +89,21 @@ const game = (() => {
   }
 
   /**
+   * Ai Player Move
+   *
+   * create a function that generates a random move for
+   * the ai player.
+   */
+  function getAiMove() {
+    let availableMoves = _getPossibleMoves();
+    return availableMoves[Math.floor(Math.random() * availableMoves.length)];
+  }
+
+  function _getPossibleMoves() {
+    return _board.filter((item) => !['x', 'o'].includes(item));
+  }
+
+  /**
    * Check For a Winner
    *
    * checks to see if a player has won or tied.
@@ -158,6 +173,7 @@ const game = (() => {
     getState,
     resetState,
     playMove,
+    getAiMove,
     switchPlayers,
     checkForWinner,
     getCurPlayer,
