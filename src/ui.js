@@ -40,14 +40,14 @@ const ui = (() => {
     }
   }
 
-  function resetUI(gameBoard) {
+  function resetBoard(gameBoard) {
     for (let i = 0; i < 9; i++) {
       gameBoard[i].textContent = '';
       gameBoard[i].classList.remove('win');
     }
   }
 
-  return { toggleGameDisplay, displayMove, colorPositionsOnWin, resetUI };
+  return { toggleGameDisplay, displayMove, colorPositionsOnWin, resetBoard };
 })();
 
 export { ui };

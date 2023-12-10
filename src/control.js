@@ -37,7 +37,7 @@ const controller = (() => {
     buttons.reset.addEventListener('click', function () {
       game.resetState();
 
-      ui.resetUI(gameBoard);
+      ui.resetBoard(gameBoard);
       ui.toggleGameDisplay(components, buttons.reset);
 
       console.log('game reset');
