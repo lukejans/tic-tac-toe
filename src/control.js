@@ -63,7 +63,7 @@ const controller = (() => {
 
     if (isLegalMove) {
       game.playMove(curPlayer, box.id, game.getState().board);
-      game.logPlayerMove(curPlayer, move);
+      game.trackPlayerMove(curPlayer, move);
       game.checkForWinner(curPlayer);
       game.switchPlayers();
 
@@ -81,7 +81,7 @@ const controller = (() => {
     let curPlayer = game.getCurPlayer();
 
     game.playMove(curPlayer, move, game.getState().board);
-    game.logPlayerMove(curPlayer, move);
+    game.trackPlayerMove(curPlayer, move);
     game.checkForWinner(curPlayer);
     game.switchPlayers();
 

@@ -78,6 +78,11 @@ const game = (() => {
     console.log(board);
   }
 
+  function trackPlayerMove(player, move) {
+    _allPlayerMoves.push(_board[move]);
+    player.moves.push(board[move]);
+  }
+
   function switchPlayers() {
     _player1.turn = !_player1.turn;
     _player2.turn = !_player2.turn;
@@ -85,11 +90,6 @@ const game = (() => {
 
   function getCurPlayer() {
     return _player1.turn ? _player1 : _player2;
-  }
-
-  function logPlayerMove(player, move) {
-    _allPlayerMoves.push(_board[move]);
-    player.moves.push(board[move]);
   }
 
   /**
@@ -181,7 +181,7 @@ const game = (() => {
     buildPlayers,
     getCurPlayer,
     playMove,
-    logPlayerMove,
+    trackPlayerMove,
     checkForWinner,
     switchPlayers,
     getAiMove,
