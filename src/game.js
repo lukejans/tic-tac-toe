@@ -74,10 +74,8 @@ const game = (() => {
   let _allPlayerMoves = [];
 
   function playMove(player, move, board) {
-    player.moves.push(board[move]);
     board[move] = player.sign;
     console.log(board);
-    _allPlayerMoves.push(board[move]);
   }
 
   function switchPlayers() {
@@ -87,6 +85,11 @@ const game = (() => {
 
   function getCurPlayer() {
     return _player1.turn ? _player1 : _player2;
+  }
+
+  function logPlayerMove(player, move) {
+    _allPlayerMoves.push(_board[move]);
+    player.moves.push(board[move]);
   }
 
   /**
@@ -171,16 +174,17 @@ const game = (() => {
 
   // All Public Functions
   return {
-    getState,
-    resetState,
-    playMove,
-    getAiMove,
-    switchPlayers,
-    checkForWinner,
-    getCurPlayer,
-    buildPlayers,
     getMode,
     setMode,
+    getState,
+    resetState,
+    buildPlayers,
+    getCurPlayer,
+    playMove,
+    logPlayerMove,
+    checkForWinner,
+    switchPlayers,
+    getAiMove,
   };
 })();
 
