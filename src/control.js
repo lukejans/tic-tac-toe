@@ -62,7 +62,7 @@ const controller = (() => {
     let isLegalMove = typeof game.getState().board[box.id] === 'number';
 
     if (isLegalMove) {
-      game.playMove(curPlayer, box.id);
+      game.playMove(curPlayer, box.id, game.getState().board);
       game.checkForWinner(curPlayer);
       game.switchPlayers();
 
@@ -79,7 +79,7 @@ const controller = (() => {
 
     let curPlayer = game.getCurPlayer();
 
-    game.playMove(curPlayer, move);
+    game.playMove(curPlayer, move, game.getState().board);
     game.checkForWinner(curPlayer);
     game.switchPlayers();
 

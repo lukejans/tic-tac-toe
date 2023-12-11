@@ -1,5 +1,6 @@
 const game = (() => {
   /**
+   *
    * Game Board
    */
   let _board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
@@ -72,11 +73,11 @@ const game = (() => {
    */
   let _allPlayerMoves = [];
 
-  function playMove(player, move) {
-    player.moves.push(_board[move]);
-    _allPlayerMoves.push(_board[move]);
-    _board[move] = player.sign;
-    console.log(_board);
+  function playMove(player, move, board) {
+    player.moves.push(board[move]);
+    board[move] = player.sign;
+    console.log(board);
+    _allPlayerMoves.push(board[move]);
   }
 
   function switchPlayers() {
