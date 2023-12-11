@@ -80,7 +80,7 @@ const game = (() => {
 
   function trackPlayerMove(player, move) {
     _allPlayerMoves.push(_board[move]);
-    player.moves.push(board[move]);
+    player.moves.push(_board[move]);
   }
 
   function switchPlayers() {

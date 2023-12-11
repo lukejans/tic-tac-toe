@@ -17,7 +17,7 @@ const controller = (() => {
 
         if (game.getMode() == 'pvc') {
           setTimeout(() => {
-            _handleAiMove(gameBoard, game.getAiMove());
+            _handleAiMove(gameBoard);
           }, 500);
         }
       });
@@ -73,12 +73,13 @@ const controller = (() => {
   }
 
   // AI Move Handler
-  function _handleAiMove(gameBoard, move) {
+  function _handleAiMove(gameBoard) {
     if (game.getState().isTerminal) {
       return;
     }
 
     let curPlayer = game.getCurPlayer();
+    let move = game.getAiMove(game.getState().board);
 
     game.playMove(curPlayer, move, game.getState().board);
     game.trackPlayerMove(curPlayer, move);
