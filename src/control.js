@@ -59,10 +59,11 @@ const controller = (() => {
     }
 
     let curPlayer = game.getCurPlayer();
-    let isLegalMove = typeof game.getState().board[box.id] === 'number';
+    let move = parseInt(box.id);
+    let isLegalMove = typeof game.getState().board[move] === 'number';
 
     if (isLegalMove) {
-      game.playMove(curPlayer, box.id, game.getState().board);
+      game.playMove(curPlayer, move, game.getState().board);
       game.trackPlayerMove(curPlayer, move);
       game.checkForWinner(curPlayer);
       game.switchPlayers();
