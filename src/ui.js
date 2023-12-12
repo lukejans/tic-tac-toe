@@ -31,7 +31,7 @@ const ui = (() => {
    * @param {Object} state - get from game module
    */
   function colorPositionsOnWin(gameBoard, state) {
-    if (state.isTerminal) {
+    if (state.isTerminal && state.winMoves.length !== 0) {
       for (let i = 0; i < 3; i++) {
         setTimeout(() => {
           gameBoard[state.winMoves[i]].classList.add('win');
@@ -41,10 +41,12 @@ const ui = (() => {
   }
 
   function resetBoard(gameBoard) {
-    for (let i = 0; i < 9; i++) {
-      gameBoard[i].textContent = '';
-      gameBoard[i].classList.remove('win');
-    }
+    setTimeout(() => {
+      for (let i = 0; i < 9; i++) {
+        gameBoard[i].textContent = '';
+        gameBoard[i].classList.remove('win');
+      }
+    }, 2000);
   }
 
   return { toggleGameDisplay, displayMove, colorPositionsOnWin, resetBoard };
