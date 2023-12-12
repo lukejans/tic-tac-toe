@@ -65,21 +65,17 @@ const game = (() => {
   /**
    * Play Desired Move
    *
-   * modifies `_allPlayerMoves` and player objects to
-   * update moves made.`switchPlayers()` is called
-   * after to ensure proper game flow is maintained.
+   * `switchPlayers()` is called to ensure proper game
+   * flow is maintained.
    * @param {Object} player - from `getCurPlayer()`
    * @param {Number} move - index of player move.
    */
-  let _allPlayerMoves = [];
-
   function playMove(player, move, board) {
     board[move] = player.sign;
     console.log(board);
   }
 
   function trackPlayerMove(player, move) {
-    _allPlayerMoves.push(move);
     player.moves.push(move);
   }
 
@@ -142,7 +138,7 @@ const game = (() => {
         return _terminalState;
       }
     }
-    if (!player.winner && _allPlayerMoves.length == 9) {
+    if (!player.winner && _getPossibleMoves().length === 0) {
       _terminalState = 'tie';
       console.log('tie');
       return _terminalState;
@@ -167,7 +163,6 @@ const game = (() => {
   function resetState() {
     _board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     _mode = '';
-    _allPlayerMoves = [];
     _winningMoves = [];
     _terminalState = '';
   }
