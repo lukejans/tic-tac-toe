@@ -40,6 +40,7 @@ const controller = (() => {
       ui.resetBoard(gameBoard);
       ui.toggleGameDisplay(components, buttons.reset);
 
+      console.clear();
       console.log('game reset');
     });
 
@@ -86,9 +87,6 @@ const controller = (() => {
     game.trackPlayerMove(curPlayer, move);
     game.checkForWinner(curPlayer);
     game.switchPlayers();
-
-    console.log(gameBoard[move]);
-    console.log(typeof gameBoard[move]);
 
     ui.displayMove(game.getState(), gameBoard[move]);
     ui.colorPositionsOnWin(gameBoard, game.getState());
