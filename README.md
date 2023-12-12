@@ -44,9 +44,9 @@ Browser based Tic Tac Toe game with an alternative mode: **_Shuffle_**. In the f
 
 there will be a list of 3 different ai bots to choose from. All with a set difficulty and a bot name for game dialog.
 
-bot 1 - easy
-bot 2 - medium
-bot 3 - impossible (noot noot cut scene.)
+- bot 1: easy
+- bot 2: medium
+- bot 3: impossible (noot noot cut scene.)
 
 ### minimax
 
