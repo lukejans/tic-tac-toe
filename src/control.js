@@ -13,12 +13,13 @@ const controller = (() => {
   function init(gameBoard, components, buttons) {
     gameBoard.forEach((box) => {
       box.addEventListener('click', function () {
+        ui.temporarilyDisableBoard(components.boardSection);
         _handlePlayerMove(gameBoard, box);
 
         if (game.getMode() == 'pvc') {
           setTimeout(() => {
             _handleAiMove(gameBoard);
-          }, 500);
+          }, 400);
         }
       });
     });
@@ -28,7 +29,7 @@ const controller = (() => {
         console.log('select a game mode to continue');
         return;
       }
-      game.buildPlayers();
+      game.createPlayers();
       ui.toggleGameDisplay(components, buttons.start);
 
       console.log('game started');
@@ -55,7 +56,7 @@ const controller = (() => {
 
   // Player Move Handler
   function _handlePlayerMove(gameBoard, box) {
-    if (game.getState().isTerminal) {
+    if (game.getState().terminalState) {
       return;
     }
 
@@ -66,7 +67,7 @@ const controller = (() => {
     if (isLegalMove) {
       game.playMove(curPlayer, move, game.getState().board);
       game.trackPlayerMove(curPlayer, move);
-      game.checkForWinner(curPlayer);
+      game.checkForWinner(curPlayer, game.getState());
       game.switchPlayers();
 
       ui.displayMove(game.getState(), box);
@@ -76,7 +77,7 @@ const controller = (() => {
 
   // AI Move Handler
   function _handleAiMove(gameBoard) {
-    if (game.getState().isTerminal) {
+    if (game.getState().terminalState) {
       return;
     }
 
@@ -85,7 +86,7 @@ const controller = (() => {
 
     game.playMove(curPlayer, move, game.getState().board);
     game.trackPlayerMove(curPlayer, move);
-    game.checkForWinner(curPlayer);
+    game.checkForWinner(curPlayer, game.getState());
     game.switchPlayers();
 
     ui.displayMove(game.getState(), gameBoard[move]);

@@ -1,26 +1,43 @@
 const game = (() => {
   /**
+   * Game State
    *
-   * Game Board
+   * gather game information and expose to controller
+   * module. Use cases are for managing game flow and
+   * updating UI.
    */
-  let _board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+  const _state = {
+    board: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+    mode: '',
+    winningMoves: [],
+    terminalState: '',
+  };
+
+  function getState() {
+    return _state;
+  }
+
+  function resetState() {
+    _state.board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    _state.mode = '';
+    _state.winningMoves = [];
+    _state.terminalState = '';
+  }
 
   /**
    * Mode Selection
    *
-   * get & set functions to change `_mode` based on
+   * get & set functions to change `_state.mode` based on
    * buttons clicked from ui.
    */
-  let _mode = '';
-
   function getMode() {
-    return _mode;
+    return _state.mode;
   }
 
   function setMode(mode) {
-    _mode = mode;
+    _state.mode = mode;
     console.log(mode);
-    return _mode;
+    return _state.mode;
   }
 
   /**
@@ -28,12 +45,7 @@ const game = (() => {
    *
    * factory function creates players and gives the ai player
    * a property of `ai`.
-   * @param {String} sign - `x` or `o`
-   * @param {Boolean} isAi - true if pvc is selected
-   * @returns {Object} new player instance
    */
-  let _player1, _player2;
-
   function _Player(sign, isAi) {
     let player = {
       sign: sign,
@@ -52,11 +64,13 @@ const game = (() => {
     return player;
   }
 
-  function buildPlayers() {
-    if (_mode == 'pvp') {
+  let _player1, _player2;
+
+  function createPlayers() {
+    if (_state.mode == 'pvp') {
       _player1 = _Player('x', false);
       _player2 = _Player('o', false);
-    } else if (_mode == 'pvc') {
+    } else if (_state.mode == 'pvc') {
       _player1 = _Player('x', false);
       _player2 = _Player('o', true);
     }
@@ -64,9 +78,13 @@ const game = (() => {
 
   function getPlayers() {
     return {
-      p1: _player1,
-      p2: _player2,
+      min: _player1,
+      max: _player2,
     };
+  }
+
+  function getCurPlayer() {
+    return _player1.turn ? _player1 : _player2;
   }
 
   /**
@@ -91,10 +109,6 @@ const game = (() => {
     _player2.turn = !_player2.turn;
   }
 
-  function getCurPlayer() {
-    return _player1.turn ? _player1 : _player2;
-  }
-
   /**
    * Ai Player Move
    *
@@ -102,26 +116,22 @@ const game = (() => {
    * the ai player.
    */
   function getAiMove() {
-    let availableMoves = _getPossibleMoves();
+    let availableMoves = _getPossibleMoves(_state.board);
     return availableMoves[Math.floor(Math.random() * availableMoves.length)];
   }
 
-  function _getPossibleMoves() {
-    return _board.filter((item) => !['x', 'o'].includes(item));
+  function evaluateState() {}
+
+  function _getPossibleMoves(board) {
+    return board.filter((item) => !['x', 'o'].includes(item));
   }
+
+  function minimax(board, player) {}
 
   /**
    * Check For a Winner
-   *
-   * checks to see if a player has won or tied.
-   * if so, returns the type of terminal state
-   * @param {Object} player - from `getCurPlayer()`
-   * @return {_terminalState} - `x`, `o`, `tie`
    */
-  let _winningMoves = [];
-  let _terminalState = '';
-
-  const checkForWinner = (player) => {
+  function checkForWinner(player, state) {
     let winConditions = [
       [0, 1, 2], // Top row
       [3, 4, 5], // Middle row
@@ -139,39 +149,17 @@ const game = (() => {
       );
 
       if (player.winner) {
-        _winningMoves = condition;
-        _terminalState = player.sign;
+        state.winningMoves = condition;
+        state.terminalState = player.sign;
         console.log(`player ${player.sign} wins`);
-        return _terminalState;
+        return state.terminalState;
       }
     }
-    if (!player.winner && _getPossibleMoves().length === 0) {
-      _terminalState = 'tie';
+    if (!player.winner && _getPossibleMoves(state.board).length === 0) {
+      state.terminalState = 'tie';
       console.log('tie');
-      return _terminalState;
+      return state.terminalState;
     }
-  };
-
-  /**
-   * Track Game State
-   *
-   * gather game information and expose to controller
-   * module. Use cases are for managing game flow and
-   * updating UI.
-   */
-  function getState() {
-    let state = {
-      board: _board,
-      winMoves: _winningMoves,
-      isTerminal: _terminalState,
-    };
-    return state;
-  }
-  function resetState() {
-    _board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-    _mode = '';
-    _winningMoves = [];
-    _terminalState = '';
   }
 
   // All Public Functions
@@ -180,7 +168,7 @@ const game = (() => {
     setMode,
     getState,
     resetState,
-    buildPlayers,
+    createPlayers,
     getCurPlayer,
     playMove,
     trackPlayerMove,

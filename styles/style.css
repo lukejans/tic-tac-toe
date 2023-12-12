@@ -78,3 +78,7 @@ button:hover {
 .hide {
   display: none;
 }
+
+.disable {
+  pointer-events: none;
+}

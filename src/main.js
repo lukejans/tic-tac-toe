@@ -4,6 +4,7 @@ import { controller } from './control.js';
 const components = {
   startScreen: document.querySelector('.start-screen-container'),
   gameScreen: document.querySelector('.game-container'),
+  boardSection: document.querySelector('.game-board'),
 };
 const buttons = {
   start: document.querySelector('#start'),

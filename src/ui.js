@@ -14,7 +14,14 @@ const ui = (() => {
     btn.disabled = true;
     setTimeout(function () {
       btn.disabled = false;
-    }, 1000);
+    }, 750);
+  }
+
+  function temporarilyDisableBoard(gameBoard) {
+    gameBoard.classList.toggle('disable');
+    setTimeout(function () {
+      gameBoard.classList.toggle('disable');
+    }, 450);
   }
 
   function displayMove(state, box) {
@@ -31,10 +38,10 @@ const ui = (() => {
    * @param {Object} state - get from game module
    */
   function colorPositionsOnWin(gameBoard, state) {
-    if (state.isTerminal && state.winMoves.length !== 0) {
+    if (state.terminalState === 'x' || state.terminalState === 'o') {
       for (let i = 0; i < 3; i++) {
         setTimeout(() => {
-          gameBoard[state.winMoves[i]].classList.add('win');
+          gameBoard[state.winningMoves[i]].classList.add('win');
         }, i * 500);
       }
     }
@@ -49,7 +56,13 @@ const ui = (() => {
     }, 1500);
   }
 
-  return { toggleGameDisplay, displayMove, colorPositionsOnWin, resetBoard };
+  return {
+    toggleGameDisplay,
+    temporarilyDisableBoard,
+    displayMove,
+    colorPositionsOnWin,
+    resetBoard,
+  };
 })();
 
 export { ui };
