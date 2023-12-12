@@ -34,7 +34,7 @@ const game = (() => {
    */
   let _player1, _player2;
 
-  function Player(sign, isAi) {
+  function _Player(sign, isAi) {
     let player = {
       sign: sign,
       score: 0,
@@ -54,12 +54,19 @@ const game = (() => {
 
   function buildPlayers() {
     if (_mode == 'pvp') {
-      _player1 = Player('x', false);
-      _player2 = Player('o', false);
+      _player1 = _Player('x', false);
+      _player2 = _Player('o', false);
     } else if (_mode == 'pvc') {
-      _player1 = Player('x', false);
-      _player2 = Player('o', true);
+      _player1 = _Player('x', false);
+      _player2 = _Player('o', true);
     }
+  }
+
+  function getPlayers() {
+    return {
+      p1: _player1,
+      p2: _player2,
+    };
   }
 
   /**
