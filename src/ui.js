@@ -46,7 +46,7 @@ const ui = (() => {
         gameBoard[i].textContent = '';
         gameBoard[i].classList.remove('win');
       }
-    }, 2000);
+    }, 1500);
   }
 
   return { toggleGameDisplay, displayMove, colorPositionsOnWin, resetBoard };
