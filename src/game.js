@@ -76,13 +76,6 @@ const game = (() => {
     }
   }
 
-  function getPlayers() {
-    return {
-      min: _player1,
-      max: _player2,
-    };
-  }
-
   function getCurPlayer() {
     return _player1.turn ? _player1 : _player2;
   }
@@ -109,6 +102,14 @@ const game = (() => {
     _player2.turn = !_player2.turn;
   }
 
+  function executeTurn(player, move, state) {
+    playMove(player, move, state.board);
+    trackPlayerMove(player, move);
+    checkForWinner(player, state);
+    switchPlayers();
+    return state;
+  }
+
   /**
    * Ai Player Move
    *
@@ -120,13 +121,29 @@ const game = (() => {
     return availableMoves[Math.floor(Math.random() * availableMoves.length)];
   }
 
-  function evaluateState() {}
+  function simulateGame() {}
+  function copyPlayers() {}
+
+  function _evaluateState() {}
 
   function _getPossibleMoves(board) {
     return board.filter((item) => !['x', 'o'].includes(item));
   }
 
-  function minimax(board, player) {}
+  function minimax(state, depth, maxPlayer) {
+    if (depth === 0 || checkForWinner(player, state)) {
+      return _evaluateState(state);
+    }
+
+    if (maxPlayer) {
+      let maxEval = -Infinity;
+      for (let move of _getPossibleMoves(state.board)) {
+        let curEval = minimax(makeMove(state, move), depth - 1, false);
+        maxEval = Math.max(maxEval, curEval);
+      }
+      return maxEval;
+    }
+  }
 
   /**
    * Check For a Winner
@@ -171,6 +188,7 @@ const game = (() => {
     createPlayers,
     getCurPlayer,
     playMove,
+    executeTurn,
     trackPlayerMove,
     checkForWinner,
     switchPlayers,

@@ -56,42 +56,41 @@ const controller = (() => {
 
   // Player Move Handler
   function _handlePlayerMove(gameBoard, box) {
-    if (game.getState().terminalState) {
+    let curState = game.getState();
+
+    if (curState.terminalState) {
       return;
     }
 
     let curPlayer = game.getCurPlayer();
     let move = parseInt(box.id);
-    let isLegalMove = typeof game.getState().board[move] === 'number';
+    let isLegalMove = typeof curState.board[move] === 'number';
 
     if (isLegalMove) {
-      game.playMove(curPlayer, move, game.getState().board);
-      game.trackPlayerMove(curPlayer, move);
-      game.checkForWinner(curPlayer, game.getState());
-      game.switchPlayers();
+      game.executeTurn(curPlayer, move, curState);
 
-      ui.displayMove(game.getState(), box);
-      ui.colorPositionsOnWin(gameBoard, game.getState());
+      ui.displayMove(curState, box);
+      ui.colorPositionsOnWin(gameBoard, curState);
     }
   }
 
   // AI Move Handler
   function _handleAiMove(gameBoard) {
-    if (game.getState().terminalState) {
+    let curState = game.getState();
+
+    if (curState.terminalState) {
       return;
     }
 
     let curPlayer = game.getCurPlayer();
-    let move = game.getAiMove(game.getState().board);
+    let move = game.getAiMove(curState.board);
 
-    game.playMove(curPlayer, move, game.getState().board);
-    game.trackPlayerMove(curPlayer, move);
-    game.checkForWinner(curPlayer, game.getState());
-    game.switchPlayers();
+    game.executeTurn(curPlayer, move, curState);
 
-    ui.displayMove(game.getState(), gameBoard[move]);
-    ui.colorPositionsOnWin(gameBoard, game.getState());
+    ui.displayMove(curState, gameBoard[move]);
+    ui.colorPositionsOnWin(gameBoard, curState);
   }
+  // Handle minimax function
 
   return { init };
 })();
