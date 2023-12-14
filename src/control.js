@@ -67,7 +67,9 @@ const controller = (() => {
     let isLegalMove = typeof curState.board[move] === 'number';
 
     if (isLegalMove) {
-      game.executeTurn(curPlayer, move, curState);
+      game.executeTurn(curState, move, curPlayer.sign);
+      game.checkForWinner(curState);
+      game.switchTurns();
 
       ui.displayMove(curState, box);
       ui.colorPositionsOnWin(gameBoard, curState);
@@ -85,7 +87,9 @@ const controller = (() => {
     let curPlayer = game.getCurPlayer();
     let move = game.getAiMove(curState.board);
 
-    game.executeTurn(curPlayer, move, curState);
+    game.executeTurn(curState, move, curPlayer.sign);
+    game.checkForWinner(curState);
+    game.switchTurns();
 
     ui.displayMove(curState, gameBoard[move]);
     ui.colorPositionsOnWin(gameBoard, curState);

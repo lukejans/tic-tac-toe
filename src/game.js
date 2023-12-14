@@ -82,31 +82,19 @@ const game = (() => {
 
   /**
    * Play Desired Move
-   *
-   * `switchPlayers()` is called to ensure proper game
-   * flow is maintained.
-   * @param {Object} player - from `getCurPlayer()`
-   * @param {Number} move - index of player move.
    */
-  function playMove(player, move, board) {
-    board[move] = player.sign;
+  function playMove(board, move, sign) {
+    board[move] = sign;
     console.log(board);
   }
 
-  function trackPlayerMove(player, move) {
-    player.moves.push(move);
-  }
-
-  function switchPlayers() {
+  function switchTurns() {
     _player1.turn = !_player1.turn;
     _player2.turn = !_player2.turn;
   }
 
-  function executeTurn(player, move, state) {
-    playMove(player, move, state.board);
-    trackPlayerMove(player, move);
-    checkForWinner(player, state);
-    switchPlayers();
+  function executeTurn(state, move, sign) {
+    playMove(state.board, move, sign);
     return state;
   }
 
@@ -148,7 +136,7 @@ const game = (() => {
   /**
    * Check For a Winner
    */
-  function checkForWinner(player, state) {
+  function checkForWinner(state) {
     let winConditions = [
       [0, 1, 2], // Top row
       [3, 4, 5], // Middle row
@@ -160,23 +148,29 @@ const game = (() => {
       [2, 4, 6], // Diagonal from top-right to bottom-left
     ];
 
+    // Check for a winner
     for (const condition of winConditions) {
-      player.winner = condition.every((number) =>
-        player.moves.includes(number)
-      );
-
-      if (player.winner) {
-        state.winningMoves = condition;
-        state.terminalState = player.sign;
-        console.log(`player ${player.sign} wins`);
+      const [a, b, c] = condition;
+      if (
+        typeof state.board[a] !== 'number' &&
+        state.board[a] === state.board[b] &&
+        state.board[a] === state.board[c]
+      ) {
+        state.winningMoves = [a, b, c];
+        state.terminalState = state.board[a];
+        console.log(`player ${state.board[a]} win's`);
         return state.terminalState;
       }
     }
-    if (!player.winner && _getPossibleMoves(state.board).length === 0) {
+
+    // Check for a tie
+    if (state.board.every((cell) => typeof cell !== 'number')) {
       state.terminalState = 'tie';
-      console.log('tie');
-      return state.terminalState;
+      console.log(`tie`);
+      return state.terminalState; // No winner, and the board is full (tie)
     }
+
+    return state.terminalState; // Game still ongoing
   }
 
   // All Public Functions
@@ -187,11 +181,9 @@ const game = (() => {
     resetState,
     createPlayers,
     getCurPlayer,
-    playMove,
     executeTurn,
-    trackPlayerMove,
     checkForWinner,
-    switchPlayers,
+    switchTurns,
     getAiMove,
   };
 })();
