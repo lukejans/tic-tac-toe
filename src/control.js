@@ -20,7 +20,7 @@ const controller = (() => {
         if (game.getMode() == 'pvc') {
           setTimeout(() => {
             _handleAiMove(gameBoard);
-          }, 400);
+          }, 250);
         }
       });
     });

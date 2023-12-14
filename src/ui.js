@@ -21,7 +21,7 @@ const ui = (() => {
     gameBoard.classList.toggle('disable');
     setTimeout(function () {
       gameBoard.classList.toggle('disable');
-    }, 450);
+    }, 400);
   }
 
   function displayMove(state, box) {
@@ -42,7 +42,7 @@ const ui = (() => {
       for (let i = 0; i < 3; i++) {
         setTimeout(() => {
           gameBoard[state.winningMoves[i]].classList.add('win');
-        }, i * 500);
+        }, i * 250);
       }
     }
   }
@@ -53,7 +53,7 @@ const ui = (() => {
         gameBoard[i].textContent = '';
         gameBoard[i].classList.remove('win');
       }
-    }, 1500);
+    }, 750);
   }
 
   return {
