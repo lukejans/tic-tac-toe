@@ -83,19 +83,15 @@ const game = (() => {
   /**
    * Play Desired Move
    */
-  function playMove(board, move, sign) {
-    board[move] = sign;
-    console.log(board);
+  function playMove(state, move, sign) {
+    state.board[move] = sign;
+    console.log(state.board);
+    return state;
   }
 
   function switchTurns() {
     _player1.turn = !_player1.turn;
     _player2.turn = !_player2.turn;
-  }
-
-  function executeTurn(state, move, sign) {
-    playMove(state.board, move, sign);
-    return state;
   }
 
   /**
@@ -181,7 +177,7 @@ const game = (() => {
     resetState,
     createPlayers,
     getCurPlayer,
-    executeTurn,
+    playMove,
     checkForWinner,
     switchTurns,
     getAiMove,

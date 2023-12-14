@@ -14,8 +14,9 @@ const controller = (() => {
     gameBoard.forEach((box) => {
       box.addEventListener('click', function () {
         ui.temporarilyDisableBoard(components.boardSection);
-        _handlePlayerMove(gameBoard, box);
-
+        if (_handlePlayerMove(gameBoard, box) == false) {
+          return;
+        }
         if (game.getMode() == 'pvc') {
           setTimeout(() => {
             _handleAiMove(gameBoard);
@@ -67,12 +68,14 @@ const controller = (() => {
     let isLegalMove = typeof curState.board[move] === 'number';
 
     if (isLegalMove) {
-      game.executeTurn(curState, move, curPlayer.sign);
+      game.playMove(curState, move, curPlayer.sign);
       game.checkForWinner(curState);
       game.switchTurns();
 
       ui.displayMove(curState, box);
       ui.colorPositionsOnWin(gameBoard, curState);
+    } else {
+      return isLegalMove;
     }
   }
 
@@ -87,7 +90,7 @@ const controller = (() => {
     let curPlayer = game.getCurPlayer();
     let move = game.getAiMove(curState.board);
 
-    game.executeTurn(curState, move, curPlayer.sign);
+    game.playMove(curState, move, curPlayer.sign);
     game.checkForWinner(curState);
     game.switchTurns();
 
