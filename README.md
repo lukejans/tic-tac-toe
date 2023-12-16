@@ -44,40 +44,6 @@ Browser based Tic Tac Toe game with an alternative mode: **_Shuffle_**. In the f
 
 there will be a list of 3 different ai bots to choose from. All with a set difficulty and a bot name for game dialog.
 
-- bot 1: easy
-- bot 2: medium
-- bot 3: impossible (noot noot cut scene.)
-
-### minimax
-
-#### functions to build
-
-- `minimax()`
-- `simulateMove()`
-- `isTerminal()`
-- `getPossibleMoves()`
-- `evaluate()`
-
-```javascript
-function minimax(state, depth, maximizingPlayer = true) {
-  if (depth == 0 || _isTerminal(state)) {
-    return _evaluate(state);
-  }
-
-  if (maximizingPlayer) {
-    let maxEval = -Infinity;
-    for (let move of _getPossibleMoves(state)) {
-      let curEval = minimax(_simulateMove(state, move), depth - 1, false);
-      maxEval = Math.max(maxEval, curEval);
-    }
-    return maxEval;
-  } else {
-    let minEval = Infinity;
-    for (let move of _getPossibleMoves(state)) {
-      let curEval = minimax(_simulateMove(state, move), depth - 1, true);
-      minEval = Math.min(minEval, curEval);
-    }
-    return minEval;
-  }
-}
-```
+- bot 1: easy (random possible move)
+- bot 2: medium (minimax depth = 1)
+- bot 3: impossible (minimax depth = max)
