@@ -72,7 +72,7 @@ const controller = (() => {
       game.checkForWinner(curState);
       game.switchTurns();
 
-      ui.displayMove(curState, box);
+      ui.displayMove(gameBoard, curState);
       ui.colorPositionsOnWin(gameBoard, curState);
     } else {
       return isLegalMove;
@@ -88,16 +88,19 @@ const controller = (() => {
     }
 
     let curPlayer = game.getCurPlayer();
-    let move = game.getAiMove(curState.board);
+
+    // minimax implementation
+    let copiedState = JSON.parse(JSON.stringify(curState));
+    let move = game.getBestMove(copiedState);
+    // let move = game.getAiMove(curState.board);
 
     game.playMove(curState, move, curPlayer.sign);
     game.checkForWinner(curState);
     game.switchTurns();
 
-    ui.displayMove(curState, gameBoard[move]);
+    ui.displayMove(gameBoard, curState);
     ui.colorPositionsOnWin(gameBoard, curState);
   }
-  // Handle minimax function
 
   return { init };
 })();

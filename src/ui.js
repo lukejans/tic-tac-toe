@@ -24,8 +24,12 @@ const ui = (() => {
     }, 400);
   }
 
-  function displayMove(state, box) {
-    box.textContent = state.board[box.id];
+  function displayMove(gameBoard, state) {
+    for (let i = 0; i < 9; i++) {
+      if (typeof state.board[i] === 'string') {
+        gameBoard[i].textContent = state.board[i];
+      }
+    }
   }
 
   /**

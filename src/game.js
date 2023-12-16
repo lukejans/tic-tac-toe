@@ -101,31 +101,72 @@ const game = (() => {
    * the ai player.
    */
   function getAiMove() {
-    let availableMoves = _getPossibleMoves(_state.board);
+    let availableMoves = getPossibleMoves(_state.board);
     return availableMoves[Math.floor(Math.random() * availableMoves.length)];
   }
 
-  function simulateGame() {}
-  function copyPlayers() {}
-
-  function _evaluateState() {}
-
-  function _getPossibleMoves(board) {
+  function getPossibleMoves(board) {
     return board.filter((item) => !['x', 'o'].includes(item));
   }
 
-  function minimax(state, depth, maxPlayer) {
-    if (depth === 0 || checkForWinner(player, state)) {
-      return _evaluateState(state);
+  let scores = {
+    x: -10,
+    o: 10,
+    tie: 0,
+  };
+
+  function getBestMove(state) {
+    // AI to make its turn
+    let bestScore = -Infinity;
+    let bestMove;
+
+    // set max depth
+    let maxDepth = game.getPossibleMoves(state.board).length;
+
+    // is the spot available?
+    let possibleMoves = getPossibleMoves(state.board);
+
+    for (let move of possibleMoves) {
+      let score = minimax(playMove(state, move, 'o'), maxDepth, false);
+      state.board[move] = move; // undo move
+
+      // track best moves
+      if (score > bestScore) {
+        bestScore = score;
+        bestMove = move;
+      }
+    }
+    return bestMove;
+  }
+
+  function minimax(state, depth, maximizingPlayer) {
+    let result = checkForWinner(state);
+    if (depth === 0 || result) {
+      return scores[result];
     }
 
-    if (maxPlayer) {
-      let maxEval = -Infinity;
-      for (let move of _getPossibleMoves(state.board)) {
-        let curEval = minimax(makeMove(state, move), depth - 1, false);
-        maxEval = Math.max(maxEval, curEval);
+    if (maximizingPlayer) {
+      let maxScore = -Infinity;
+
+      for (let move of getPossibleMoves(state.board)) {
+        // recursively call minimax
+        let curScore = minimax(playMove(state, move, 'o'), depth - 1, false);
+        state.board[move] = move; // undo move
+
+        maxScore = Math.max(maxScore, curScore);
       }
-      return maxEval;
+      return maxScore;
+    } else {
+      let minScore = Infinity;
+
+      for (let move of getPossibleMoves(state.board)) {
+        // recursively call minimax
+        let curScore = minimax(playMove(state, move, 'x'), depth - 1, true);
+        state.board[move] = move; // undo move
+
+        minScore = Math.min(minScore, curScore);
+      }
+      return minScore;
     }
   }
 
@@ -166,11 +207,13 @@ const game = (() => {
       return state.terminalState; // No winner, and the board is full (tie)
     }
 
-    return state.terminalState; // Game still ongoing
+    return ''; // Game still ongoing
   }
 
   // All Public Functions
   return {
+    getBestMove,
+    getPossibleMoves,
     getMode,
     setMode,
     getState,
