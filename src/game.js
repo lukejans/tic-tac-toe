@@ -85,7 +85,7 @@ const game = (() => {
    */
   function playMove(state, move, sign) {
     state.board[move] = sign;
-    console.log(state.board);
+    // console.log(state.board);
     return state;
   }
 
@@ -115,13 +115,19 @@ const game = (() => {
     tie: 0,
   };
 
+  let calls = 1; // debug
+
   function getBestMove(state) {
+    console.time('run_time');
+    console.log('----- start search -----'); // debug
+    calls = 1; // debug
+
     // AI to make its turn
     let bestScore = -Infinity;
     let bestMove;
 
     // set max depth
-    let maxDepth = game.getPossibleMoves(state.board).length;
+    let maxDepth = getPossibleMoves(state.board).length;
 
     // is the spot available?
     let possibleMoves = getPossibleMoves(state.board);
@@ -136,11 +142,22 @@ const game = (() => {
         bestMove = move;
       }
     }
+
+    // debug
+    console.log(`bestMove: ${bestMove}`);
+    console.log(`bestScore: ${bestScore}`);
+    console.log(`minimax calls: ${calls}`);
+    console.timeEnd('run_time');
+    console.log('----- end search -----');
+
     return bestMove;
   }
 
   function minimax(state, depth, maximizingPlayer) {
+    calls++; // debug
+
     let result = checkForWinner(state);
+
     if (depth === 0 || result) {
       return scores[result];
     }
@@ -195,7 +212,7 @@ const game = (() => {
       ) {
         state.winningMoves = [a, b, c];
         state.terminalState = state.board[a];
-        console.log(`player ${state.board[a]} win's`);
+        // console.log(`player ${state.board[a]} win's`);
         return state.terminalState;
       }
     }
@@ -203,7 +220,7 @@ const game = (() => {
     // Check for a tie
     if (state.board.every((cell) => typeof cell !== 'number')) {
       state.terminalState = 'tie';
-      console.log(`tie`);
+      // console.log(`tie`);
       return state.terminalState; // No winner, and the board is full (tie)
     }
 
