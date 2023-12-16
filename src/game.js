@@ -85,7 +85,27 @@ const game = (() => {
    */
   function playMove(state, move, sign) {
     state.board[move] = sign;
-    // console.log(state.board);
+
+    // debug
+    let board = state.board.slice();
+    let boardLog = {};
+    for (let i = 0; i < 9; i++) {
+      if (typeof board[i] == 'number') {
+        boardLog[i] = ' ';
+      } else if (typeof board[i] == 'string') {
+        boardLog[i] = board[i];
+      }
+    }
+    console.log(
+      '\n',
+      `  ${boardLog[0]} | ${boardLog[1]} | ${boardLog[2]} \n`,
+      ` ---+---+--- \n`,
+      `  ${boardLog[3]} | ${boardLog[4]} | ${boardLog[5]} \n`,
+      ` ---+---+--- \n`,
+      `  ${boardLog[6]} | ${boardLog[7]} | ${boardLog[8]} \n`,
+      '\n'
+    );
+
     return state;
   }
 
@@ -115,10 +135,20 @@ const game = (() => {
     tie: 0,
   };
 
+  function evaluate(result, depth) {
+    if (result == 'x') {
+      return scores.x - depth;
+    } else if (result == 'o') {
+      return scores.o + depth;
+    } else {
+      return scores.tie;
+    }
+  }
+
   let calls = 1; // debug
 
   function getBestMove(state) {
-    console.time('run_time');
+    console.time('run_time'); // debug
     console.log('----- start search -----'); // debug
     calls = 1; // debug
 
@@ -157,9 +187,8 @@ const game = (() => {
     calls++; // debug
 
     let result = checkForWinner(state);
-
     if (depth === 0 || result) {
-      return scores[result];
+      return evaluate(result, depth);
     }
 
     if (maximizingPlayer) {
