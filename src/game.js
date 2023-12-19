@@ -104,47 +104,63 @@ const game = (() => {
     return availableMoves[Math.floor(Math.random() * availableMoves.length)];
   }
 
-  function getPossibleMoves(board) {
-    return board.filter((item) => !['x', 'o'].includes(item));
-  }
+  let calls = 1; // debug
 
-  let scores = {
-    x: -10,
-    o: 10,
-    tie: 0,
-  };
+  function minimax(state, depth, maximizingPlayer) {
+    calls++; // debug
 
-  function evaluate(result, depth) {
-    if (result == 'x') {
-      return scores.x - depth;
-    } else if (result == 'o') {
-      return scores.o + depth;
+    // check for terminal state
+    let result = checkForWinner(state);
+    if (depth === 0 || result) {
+      return evaluate(result, depth);
+    }
+
+    if (maximizingPlayer) {
+      let maxScore = -Infinity;
+
+      // call minimax on each possible branch of moves
+      for (let move of getPossibleMoves(state.board)) {
+        // simulate branch of moves
+        state.board[move] = 'o';
+        let curScore = minimax(state, depth - 1, false);
+        state.board[move] = move;
+
+        maxScore = Math.max(maxScore, curScore);
+      }
+      return maxScore;
     } else {
-      return scores.tie;
+      let minScore = Infinity;
+
+      // call minimax on each possible branch of moves
+      for (let move of getPossibleMoves(state.board)) {
+        // simulate branch of moves
+        state.board[move] = 'x';
+        let curScore = minimax(state, depth - 1, true);
+        state.board[move] = move;
+
+        minScore = Math.min(minScore, curScore);
+      }
+      return minScore;
     }
   }
 
-  let calls = 1; // debug
-
   function getBestMove(state) {
-    console.time('run_time'); // debug
-    calls = 1; // debug
-
     // AI to make its turn
     let bestScore = -Infinity;
     let bestMove;
-
-    // set max depth
     let maxDepth = getPossibleMoves(state.board).length;
-
-    // is the spot available?
     let possibleMoves = getPossibleMoves(state.board);
 
-    for (let move of possibleMoves) {
-      let score = minimax(playMove(state, move, 'o'), maxDepth, false);
-      state.board[move] = move; // undo move
+    console.time('run_time'); // debug
+    calls = 1; // debug
 
-      // track best moves
+    // call minimax on each possible branch of moves
+    for (let move of possibleMoves) {
+      state.board[move] = 'o';
+      let score = minimax(state, maxDepth, false);
+      state.board[move] = move;
+
+      // update best move
       if (score > bestScore) {
         bestScore = score;
         bestMove = move;
@@ -157,42 +173,25 @@ const game = (() => {
     return bestMove;
   }
 
-  function minimax(state, depth, maximizingPlayer) {
-    calls++; // debug
-
-    let result = checkForWinner(state);
-    if (depth === 0 || result) {
-      return evaluate(result, depth);
-    }
-
-    if (maximizingPlayer) {
-      let maxScore = -Infinity;
-
-      for (let move of getPossibleMoves(state.board)) {
-        // recursively call minimax
-        let curScore = minimax(playMove(state, move, 'o'), depth - 1, false);
-        state.board[move] = move; // undo move
-
-        maxScore = Math.max(maxScore, curScore);
-      }
-      return maxScore;
+  function evaluate(result, depth) {
+    if (result == 'x') {
+      return scores.x - depth;
+    } else if (result == 'o') {
+      return scores.o + depth;
     } else {
-      let minScore = Infinity;
-
-      for (let move of getPossibleMoves(state.board)) {
-        // recursively call minimax
-        let curScore = minimax(playMove(state, move, 'x'), depth - 1, true);
-        state.board[move] = move; // undo move
-
-        minScore = Math.min(minScore, curScore);
-      }
-      return minScore;
+      return scores.tie;
     }
   }
+  const scores = {
+    x: -10,
+    o: 10,
+    tie: 0,
+  };
 
-  /**
-   * Check For a Winner
-   */
+  function getPossibleMoves(board) {
+    return board.filter((item) => !['x', 'o'].includes(item));
+  }
+
   function checkForWinner(state) {
     let winConditions = [
       [0, 1, 2], // Top row
@@ -205,7 +204,7 @@ const game = (() => {
       [2, 4, 6], // Diagonal top-right -> bottom-left
     ];
 
-    // Check for a winner
+    // check for a winner
     for (const condition of winConditions) {
       const [a, b, c] = condition;
       if (
@@ -219,16 +218,16 @@ const game = (() => {
       }
     }
 
-    // Check for a tie
+    // check for a tie
     if (state.board.every((cell) => typeof cell !== 'number')) {
       state.terminalState = 'tie';
-      return state.terminalState; // No winner, and the board is full (tie)
+      return state.terminalState;
     }
 
-    return ''; // Game still ongoing
+    return ''; // game still ongoing
   }
 
-  // All Public Functions
+  // all public functions
   return {
     getBestMove,
     getPossibleMoves,
