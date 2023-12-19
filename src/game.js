@@ -85,27 +85,6 @@ const game = (() => {
    */
   function playMove(state, move, sign) {
     state.board[move] = sign;
-
-    // debug
-    let board = state.board.slice();
-    let boardLog = {};
-    for (let i = 0; i < 9; i++) {
-      if (typeof board[i] == 'number') {
-        boardLog[i] = ' ';
-      } else if (typeof board[i] == 'string') {
-        boardLog[i] = board[i];
-      }
-    }
-    console.log(
-      '\n',
-      `  ${boardLog[0]} | ${boardLog[1]} | ${boardLog[2]} \n`,
-      ` ---+---+--- \n`,
-      `  ${boardLog[3]} | ${boardLog[4]} | ${boardLog[5]} \n`,
-      ` ---+---+--- \n`,
-      `  ${boardLog[6]} | ${boardLog[7]} | ${boardLog[8]} \n`,
-      '\n'
-    );
-
     return state;
   }
 
@@ -149,7 +128,6 @@ const game = (() => {
 
   function getBestMove(state) {
     console.time('run_time'); // debug
-    console.log('----- start search -----'); // debug
     calls = 1; // debug
 
     // AI to make its turn
@@ -173,12 +151,8 @@ const game = (() => {
       }
     }
 
-    // debug
-    console.log(`bestMove: ${bestMove}`);
-    console.log(`bestScore: ${bestScore}`);
-    console.log(`minimax calls: ${calls}`);
-    console.timeEnd('run_time');
-    console.log('----- end search -----');
+    console.log(`minimax calls: ${calls}`); // debug
+    console.timeEnd('run_time'); // debug
 
     return bestMove;
   }
@@ -227,8 +201,8 @@ const game = (() => {
       [0, 3, 6], // Left column
       [1, 4, 7], // Middle column
       [2, 5, 8], // Right column
-      [0, 4, 8], // Diagonal from top-left to bottom-right
-      [2, 4, 6], // Diagonal from top-right to bottom-left
+      [0, 4, 8], // Diagonal top-left -> bottom-right
+      [2, 4, 6], // Diagonal top-right -> bottom-left
     ];
 
     // Check for a winner
@@ -241,7 +215,6 @@ const game = (() => {
       ) {
         state.winningMoves = [a, b, c];
         state.terminalState = state.board[a];
-        // console.log(`player ${state.board[a]} win's`);
         return state.terminalState;
       }
     }
@@ -249,7 +222,6 @@ const game = (() => {
     // Check for a tie
     if (state.board.every((cell) => typeof cell !== 'number')) {
       state.terminalState = 'tie';
-      // console.log(`tie`);
       return state.terminalState; // No winner, and the board is full (tie)
     }
 
@@ -274,3 +246,43 @@ const game = (() => {
 })();
 
 export { game };
+
+/**
+ * Used For Debugging
+ * 
+ * !1. print board move to console 
+    let board = state.board.slice();
+    let boardLog = {};
+    for (let i = 0; i < 9; i++) {
+      if (typeof board[i] == 'number') {
+        boardLog[i] = ' ';
+      } else if (typeof board[i] == 'string') {
+        boardLog[i] = board[i];
+      }
+    }
+    console.log(
+      '\n',
+      `  ${boardLog[0]} | ${boardLog[1]} | ${boardLog[2]} \n`,
+      ` ---+---+--- \n`,
+      `  ${boardLog[3]} | ${boardLog[4]} | ${boardLog[5]} \n`,
+      ` ---+---+--- \n`,
+      `  ${boardLog[6]} | ${boardLog[7]} | ${boardLog[8]} \n`,
+      '\n'
+    );
+ * 
+ * !2. print terminal state to console - checkForWinner()
+    console.log(`player ${state.board[a]} win's`);
+    console.log(`tie`);
+ * 
+ *
+ * !3. start of search indication - getBestMove()
+    console.log('----- start search -----'); 
+
+    // code here
+    console.log(`bestMove: ${bestMove}`);
+    console.log(`bestScore: ${bestScore}`);
+    console.log('----- end search -----');
+ * 
+ * 
+ * 
+ */
