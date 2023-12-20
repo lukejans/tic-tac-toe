@@ -1,8 +1,9 @@
 import { ui } from './ui.js';
-
 import { game } from './game.js';
 
 const controller = (() => {
+  // Reference to game state object
+  let state = game.getState();
   /**
    * UI Dependency Injection
    *
@@ -14,20 +15,18 @@ const controller = (() => {
     gameBoard.forEach((box) => {
       box.addEventListener('click', function () {
         ui.temporarilyDisableBoard(components.boardSection);
-        if (_handlePlayerMove(gameBoard, box) == false) {
+        if (_handlePlayerMove(gameBoard, box) === false) {
           return;
         }
-        if (game.getMode() == 'pvc') {
-          setTimeout(() => {
-            _handleAiMove(gameBoard);
-          }, 250);
+        if (state.mode === 'pvc') {
+          _handleAiMove(gameBoard);
         }
       });
     });
 
     buttons.start.addEventListener('click', function () {
-      if (game.getMode() == '') {
-        console.log('select a game mode to continue');
+      if (state.mode === '') {
+        // console.log('no mode selected'); // debug
         return;
       }
       game.createPlayers();
@@ -42,38 +41,36 @@ const controller = (() => {
       ui.resetBoard(gameBoard);
       ui.toggleGameDisplay(components, buttons.reset);
 
-      console.clear();
-      console.log('game reset');
+      // console.clear(); // debug
+      // console.log('game reset'); // debug
     });
 
     buttons.pvp.addEventListener('click', function () {
-      game.setMode('pvp');
+      state.mode = 'pvp';
     });
 
     buttons.pvc.addEventListener('click', function () {
-      game.setMode('pvc');
+      state.mode = 'pvc';
     });
   }
 
   // Player Move Handler
   function _handlePlayerMove(gameBoard, box) {
-    let curState = game.getState();
-
-    if (curState.terminalState) {
+    if (state.terminalState) {
       return;
     }
 
     let curPlayer = game.getCurPlayer();
     let move = parseInt(box.id);
-    let isLegalMove = typeof curState.board[move] === 'number';
+    let isLegalMove = typeof state.board[move] === 'number';
 
     if (isLegalMove) {
-      game.playMove(curState, move, curPlayer.sign);
-      game.checkForWinner(curState);
+      game.playMove(state, move, curPlayer.sign);
+      game.checkForWinner(state);
       game.switchTurns();
 
-      ui.displayMove(gameBoard, curState);
-      ui.colorPositionsOnWin(gameBoard, curState);
+      ui.displayMove(gameBoard, state);
+      ui.colorPositionsOnWin(gameBoard, state);
     } else {
       return isLegalMove;
     }
@@ -81,25 +78,24 @@ const controller = (() => {
 
   // AI Move Handler
   function _handleAiMove(gameBoard) {
-    let curState = game.getState();
-
-    if (curState.terminalState) {
+    if (state.terminalState) {
       return;
     }
 
     let curPlayer = game.getCurPlayer();
 
     // minimax implementation
-    let copiedState = JSON.parse(JSON.stringify(curState));
+    let copiedState = JSON.parse(JSON.stringify(state));
     let move = game.getBestMove(copiedState);
-    // let move = game.getAiMove(curState.board);
 
-    game.playMove(curState, move, curPlayer.sign);
-    game.checkForWinner(curState);
-    game.switchTurns();
+    setTimeout(() => {
+      game.playMove(state, move, curPlayer.sign);
+      game.checkForWinner(state);
+      game.switchTurns();
 
-    ui.displayMove(gameBoard, curState);
-    ui.colorPositionsOnWin(gameBoard, curState);
+      ui.displayMove(gameBoard, state);
+      ui.colorPositionsOnWin(gameBoard, state);
+    }, 200);
   }
 
   return { init };

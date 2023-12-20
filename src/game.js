@@ -1,10 +1,19 @@
 const game = (() => {
   /**
-   * Game State
+   * Game State Data
    *
-   * gather game information and expose to controller
-   * module. Use cases are for managing game flow and
-   * updating UI.
+   * @var {_state} Object - private game variables / information to
+   * track the game board, mode selected, winning move indices & the
+   * current terminal state (x-win, o-win, tie, live-game).
+   *
+   * @function getState() - returns the `_state` object to create a
+   * self-referencing variable to be used inside @module ./control.js
+   *    - modifies state after each move is played.
+   *    - reads the state to update the ui.
+   *
+   * @function resetState() - resets the state object to default values
+   *
+   * @var {_Player}
    */
   const _state = {
     board: [0, 1, 2, 3, 4, 5, 6, 7, 8],
@@ -12,11 +21,9 @@ const game = (() => {
     winningMoves: [],
     terminalState: '',
   };
-
   function getState() {
     return _state;
   }
-
   function resetState() {
     _state.board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     _state.mode = '';
@@ -25,26 +32,11 @@ const game = (() => {
   }
 
   /**
-   * Mode Selection
+   * Player Creation Factory Function
    *
-   * get & set functions to change `_state.mode` based on
-   * buttons clicked from ui.
-   */
-  function getMode() {
-    return _state.mode;
-  }
-
-  function setMode(mode) {
-    _state.mode = mode;
-    console.log(mode);
-    return _state.mode;
-  }
-
-  /**
-   * Player Creation Factory
-   *
-   * factory function creates players and gives the ai player
-   * a property of `ai`.
+   * @param {*} sign
+   * @param {*} isAi
+   * @returns
    */
   function _Player(sign, isAi) {
     let player = {
@@ -94,20 +86,18 @@ const game = (() => {
   }
 
   /**
-   * Ai Player Move
-   *
-   * create a function that generates a random move for
-   * the ai player.
+   * AI Player Move
+   * @returns
    */
   function getAiMove() {
     let availableMoves = getPossibleMoves(_state.board);
     return availableMoves[Math.floor(Math.random() * availableMoves.length)];
   }
 
-  let calls = 1; // debug
+  // let calls = 1; // debug
 
   function minimax(state, depth, maximizingPlayer) {
-    calls++; // debug
+    // calls++; // debug
 
     // check for terminal state
     let result = checkForWinner(state);
@@ -151,8 +141,8 @@ const game = (() => {
     let maxDepth = getPossibleMoves(state.board).length;
     let possibleMoves = getPossibleMoves(state.board);
 
-    console.time('run_time'); // debug
-    calls = 1; // debug
+    // console.time('run_time'); // debug
+    // calls = 1; // debug
 
     // call minimax on each possible branch of moves
     for (let move of possibleMoves) {
@@ -167,8 +157,8 @@ const game = (() => {
       }
     }
 
-    console.log(`minimax calls: ${calls}`); // debug
-    console.timeEnd('run_time'); // debug
+    // console.log(`minimax calls: ${calls}`); // debug
+    // console.timeEnd('run_time'); // debug
 
     return bestMove;
   }
@@ -230,9 +220,6 @@ const game = (() => {
   // all public functions
   return {
     getBestMove,
-    getPossibleMoves,
-    getMode,
-    setMode,
     getState,
     resetState,
     createPlayers,
