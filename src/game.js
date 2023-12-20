@@ -8,12 +8,8 @@ const game = (() => {
    *
    * @function getState() - returns the `_state` object to create a
    * self-referencing variable to be used inside @module ./control.js
-   *    - modifies state after each move is played.
-   *    - reads the state to update the ui.
-   *
-   * @function resetState() - resets the state object to default values
-   *
-   * @var {_Player}
+   * which modifies state after each move is played and reads the state
+   * to update the ui.
    */
   const _state = {
     board: [0, 1, 2, 3, 4, 5, 6, 7, 8],
