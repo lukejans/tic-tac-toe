@@ -6,10 +6,7 @@ const game = (() => {
    * track the game board, mode selected, winning move indices & the
    * current terminal state (x-win, o-win, tie, live-game).
    *
-   * @function getState() - returns the `_state` object to create a
-   * self-referencing variable to be used inside @module ./control.js
-   * which modifies state after each move is played and reads the state
-   * to update the ui.
+   * @function getState() - for creating state-referencing variable.
    */
   const _state = {
     board: [0, 1, 2, 3, 4, 5, 6, 7, 8],
