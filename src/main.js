@@ -11,6 +11,7 @@ const buttons = {
   reset: document.querySelector('#reset'),
   pvp: document.querySelector('#pvp'),
   pvc: document.querySelector('#pvc'),
+  cvc: document.querySelector('#cvc'),
 };
 /**
  * Tic Tac Toe Game Board
