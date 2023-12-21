@@ -14,88 +14,108 @@ const controller = (() => {
   function init(gameBoard, components, buttons) {
     gameBoard.forEach((box) => {
       box.addEventListener('click', function () {
-        ui.temporarilyDisableBoard(components.boardSection);
-        if (_handlePlayerMove(gameBoard, box) === false) {
+        // only clickable during active games or mode with human
+        if (state.terminalState || state.mode === 'cvc') {
           return;
         }
-        if (state.mode === 'pvc') {
-          _handleAiMove(gameBoard);
-        }
+        // avoid double clicks
+        ui.temporarilyDisableBoard(components.boardSection);
+        // play moves
+        _handlePresentHuman(gameBoard, box);
       });
     });
 
     buttons.start.addEventListener('click', function () {
+      // ensure mode is selected
       if (state.mode === '') {
-        // console.log('no mode selected'); // debug
         return;
       }
+
       game.createPlayers();
       ui.toggleGameDisplay(components, buttons.start);
 
-      console.log('game started');
+      // play computer only game
+      if (state.mode === 'cvc') {
+        setTimeout(() => _handleAiOnlyGame(gameBoard), 250);
+      }
     });
-
     buttons.reset.addEventListener('click', function () {
       game.resetState();
 
       ui.resetBoard(gameBoard);
       ui.toggleGameDisplay(components, buttons.reset);
-
-      // console.clear(); // debug
-      // console.log('game reset'); // debug
     });
 
+    /**
+     * Mode selection Buttons
+     */
     buttons.pvp.addEventListener('click', function () {
       state.mode = 'pvp';
     });
-
     buttons.pvc.addEventListener('click', function () {
       state.mode = 'pvc';
     });
+    buttons.cvc.addEventListener('click', function () {
+      state.mode = 'cvc';
+    });
   }
 
-  // Player Move Handler
-  function _handlePlayerMove(gameBoard, box) {
-    if (state.terminalState) {
-      return;
-    }
-
-    let curPlayer = game.getCurPlayer();
+  // Mode PvP & PvC Handler
+  function _handlePresentHuman(gameBoard, box) {
     let move = parseInt(box.id);
     let isLegalMove = typeof state.board[move] === 'number';
 
+    // only allow legal moves
     if (isLegalMove) {
-      game.playMove(state, move, curPlayer.sign);
-      game.checkForWinner(state);
-      game.switchTurns();
+      _playHumanMove(gameBoard, move);
 
-      ui.displayMove(gameBoard, state);
-      ui.colorPositionsOnWin(gameBoard, state);
-    } else {
-      return isLegalMove;
-    }
+      if (state.mode === 'pvc') {
+        setTimeout(() => _playAiMove(gameBoard), 250);
+      }
+    } else return;
   }
 
-  // AI Move Handler
-  function _handleAiMove(gameBoard) {
+  // Mode CvC Handler
+  function _handleAiOnlyGame(gameBoard) {
+    _playAiMove(gameBoard);
+
+    // stop making moves when game is over
+    if (state.terminalState) {
+      return;
+    }
+    // recursive call to play next move
+    setTimeout(() => _handleAiOnlyGame(gameBoard), 250);
+  }
+
+  // Execute Human Move
+  function _playHumanMove(gameBoard, move) {
+    let curPlayer = game.getCurPlayer();
+
+    game.playMove(state, move, curPlayer.sign);
+    game.checkForWinner(state);
+    game.switchTurns();
+
+    ui.updateUI(gameBoard, state);
+  }
+
+  // Execute AI Move
+  function _playAiMove(gameBoard) {
     if (state.terminalState) {
       return;
     }
 
     let curPlayer = game.getCurPlayer();
+    let otherPlayer = game.getOtherPlayer();
 
     // minimax implementation
     let copiedState = JSON.parse(JSON.stringify(state));
-    let move = game.getBestMove(copiedState);
+    let move = game.getBestMove(copiedState, curPlayer.sign, otherPlayer.sign);
 
-    setTimeout(() => {
-      game.playMove(state, move, curPlayer.sign);
-      game.checkForWinner(state);
-      game.switchTurns();
+    game.playMove(state, move, curPlayer.sign);
+    game.checkForWinner(state);
+    game.switchTurns();
 
-      ui.displayMove(gameBoard, state);
-      ui.colorPositionsOnWin(gameBoard, state);
-    }, 200);
+    ui.updateUI(gameBoard, state);
   }
 
   return { init };

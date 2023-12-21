@@ -58,6 +58,9 @@ const game = (() => {
     } else if (_state.mode == 'pvc') {
       _player1 = _Player('x', false);
       _player2 = _Player('o', true);
+    } else if (_state.mode == 'cvc') {
+      _player1 = _Player('x', true);
+      _player2 = _Player('o', true);
     }
   }
 
@@ -65,11 +68,16 @@ const game = (() => {
     return _player1.turn ? _player1 : _player2;
   }
 
+  function getOtherPlayer() {
+    return _player1.turn ? _player2 : _player1;
+  }
+
   /**
    * Play Desired Move
    */
   function playMove(state, move, sign) {
     state.board[move] = sign;
+    console.log(sign);
     return state;
   }
 
@@ -87,11 +95,7 @@ const game = (() => {
     return availableMoves[Math.floor(Math.random() * availableMoves.length)];
   }
 
-  // let calls = 1; // debug
-
-  function minimax(state, depth, maximizingPlayer) {
-    // calls++; // debug
-
+  function minimax(state, depth, maximizingPlayer, maxSign, minSign) {
     // check for terminal state
     let result = checkForWinner(state);
     if (depth === 0 || result) {
@@ -104,8 +108,8 @@ const game = (() => {
       // call minimax on each possible branch of moves
       for (let move of getPossibleMoves(state.board)) {
         // simulate branch of moves
-        state.board[move] = 'o';
-        let curScore = minimax(state, depth - 1, false);
+        state.board[move] = maxSign; // maximize `sign`
+        let curScore = minimax(state, depth - 1, false, maxSign, minSign);
         state.board[move] = move;
 
         maxScore = Math.max(maxScore, curScore);
@@ -117,8 +121,8 @@ const game = (() => {
       // call minimax on each possible branch of moves
       for (let move of getPossibleMoves(state.board)) {
         // simulate branch of moves
-        state.board[move] = 'x';
-        let curScore = minimax(state, depth - 1, true);
+        state.board[move] = minSign; // minimum `sign`
+        let curScore = minimax(state, depth - 1, true, maxSign, minSign);
         state.board[move] = move;
 
         minScore = Math.min(minScore, curScore);
@@ -127,20 +131,17 @@ const game = (() => {
     }
   }
 
-  function getBestMove(state) {
+  function getBestMove(state, maxSign, minSign) {
     // AI to make its turn
     let bestScore = -Infinity;
     let bestMove;
     let maxDepth = getPossibleMoves(state.board).length;
     let possibleMoves = getPossibleMoves(state.board);
 
-    // console.time('run_time'); // debug
-    // calls = 1; // debug
-
     // call minimax on each possible branch of moves
     for (let move of possibleMoves) {
-      state.board[move] = 'o';
-      let score = minimax(state, maxDepth, false);
+      state.board[move] = maxSign;
+      let score = minimax(state, maxDepth, false, maxSign, minSign);
       state.board[move] = move;
 
       // update best move
@@ -149,9 +150,6 @@ const game = (() => {
         bestMove = move;
       }
     }
-
-    // console.log(`minimax calls: ${calls}`); // debug
-    // console.timeEnd('run_time'); // debug
 
     return bestMove;
   }
@@ -217,6 +215,7 @@ const game = (() => {
     resetState,
     createPlayers,
     getCurPlayer,
+    getOtherPlayer,
     playMove,
     checkForWinner,
     switchTurns,
@@ -225,43 +224,3 @@ const game = (() => {
 })();
 
 export { game };
-
-/**
- * Used For Debugging
- * 
- * !1. print board move to console 
-    let board = state.board.slice();
-    let boardLog = {};
-    for (let i = 0; i < 9; i++) {
-      if (typeof board[i] == 'number') {
-        boardLog[i] = ' ';
-      } else if (typeof board[i] == 'string') {
-        boardLog[i] = board[i];
-      }
-    }
-    console.log(
-      '\n',
-      `  ${boardLog[0]} | ${boardLog[1]} | ${boardLog[2]} \n`,
-      ` ---+---+--- \n`,
-      `  ${boardLog[3]} | ${boardLog[4]} | ${boardLog[5]} \n`,
-      ` ---+---+--- \n`,
-      `  ${boardLog[6]} | ${boardLog[7]} | ${boardLog[8]} \n`,
-      '\n'
-    );
- * 
- * !2. print terminal state to console - checkForWinner()
-    console.log(`player ${state.board[a]} win's`);
-    console.log(`tie`);
- * 
- *
- * !3. start of search indication - getBestMove()
-    console.log('----- start search -----'); 
-
-    // code here
-    console.log(`bestMove: ${bestMove}`);
-    console.log(`bestScore: ${bestScore}`);
-    console.log('----- end search -----');
- * 
- * 
- * 
- */

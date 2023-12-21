@@ -24,7 +24,7 @@ const ui = (() => {
     }, 400);
   }
 
-  function displayMove(gameBoard, state) {
+  function _displayMove(gameBoard, state) {
     for (let i = 0; i < 9; i++) {
       if (typeof state.board[i] === 'string') {
         gameBoard[i].textContent = state.board[i];
@@ -41,7 +41,7 @@ const ui = (() => {
    * @param {Array} gameBoard - full board ui
    * @param {Object} state - get from game module
    */
-  function colorPositionsOnWin(gameBoard, state) {
+  function _colorPositionsOnWin(gameBoard, state) {
     if (state.terminalState === 'x' || state.terminalState === 'o') {
       for (let i = 0; i < 3; i++) {
         setTimeout(() => {
@@ -49,6 +49,11 @@ const ui = (() => {
         }, i * 250);
       }
     }
+  }
+
+  function updateUI(gameBoard, state) {
+    _displayMove(gameBoard, state);
+    _colorPositionsOnWin(gameBoard, state);
   }
 
   function resetBoard(gameBoard) {
@@ -61,10 +66,9 @@ const ui = (() => {
   }
 
   return {
+    updateUI,
     toggleGameDisplay,
     temporarilyDisableBoard,
-    displayMove,
-    colorPositionsOnWin,
     resetBoard,
   };
 })();
