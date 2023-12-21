@@ -76,15 +76,12 @@ const controller = (() => {
   }
 
   // Mode CvC Handler
-  function _handleAiOnlyGame(gameBoard) {
-    _playAiMove(gameBoard);
-
-    // stop making moves when game is over
-    if (state.terminalState) {
-      return;
+  async function _handleAiOnlyGame(gameBoard) {
+    while (state.terminalState === '') {
+      await _playAiMove(gameBoard);
+      // Add a delay if needed
+      await new Promise((resolve) => setTimeout(resolve, 250));
     }
-    // recursive call to play next move
-    setTimeout(() => _handleAiOnlyGame(gameBoard), 250);
   }
 
   // Execute Human Move
@@ -105,11 +102,11 @@ const controller = (() => {
     }
 
     let curPlayer = game.getCurPlayer();
-    let otherPlayer = game.getOtherPlayer();
+    let minPlayer = game.getOtherPlayer();
 
     // minimax implementation
     let copiedState = JSON.parse(JSON.stringify(state));
-    let move = game.getBestMove(copiedState, curPlayer.sign, otherPlayer.sign);
+    let move = game.getBestMove(copiedState, curPlayer.sign, minPlayer.sign);
 
     game.playMove(state, move, curPlayer.sign);
     game.checkForWinner(state);
