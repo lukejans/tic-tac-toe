@@ -77,7 +77,6 @@ const game = (() => {
    */
   function playMove(state, move, sign) {
     state.board[move] = sign;
-    console.log(sign);
     return state;
   }
 
@@ -99,7 +98,7 @@ const game = (() => {
     // check for terminal state
     let result = checkForWinner(state);
     if (depth === 0 || result) {
-      return evaluate(result, depth);
+      return evaluate(result, depth, maxSign, minSign);
     }
 
     if (maximizingPlayer) {
@@ -135,8 +134,8 @@ const game = (() => {
     // AI to make its turn
     let bestScore = -Infinity;
     let bestMove;
-    let maxDepth = getPossibleMoves(state.board).length;
     let possibleMoves = getPossibleMoves(state.board);
+    let maxDepth = possibleMoves.length;
 
     // call minimax on each possible branch of moves
     for (let move of possibleMoves) {
@@ -154,18 +153,19 @@ const game = (() => {
     return bestMove;
   }
 
-  function evaluate(result, depth) {
-    if (result == 'x') {
-      return scores.x - depth;
-    } else if (result == 'o') {
-      return scores.o + depth;
+  function evaluate(result, depth, maxSign, minSign) {
+    if (result == maxSign) {
+      return scores.max + depth;
+    } else if (result == minSign) {
+      return scores.min - depth;
     } else {
       return scores.tie;
     }
   }
+
   const scores = {
-    x: -10,
-    o: 10,
+    max: 10,
+    min: -10,
     tie: 0,
   };
 
