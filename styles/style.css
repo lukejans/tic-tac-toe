@@ -9,7 +9,7 @@ button {
   border: 1px solid black;
   font-family: monospace;
   cursor: pointer;
-  margin: 10px;
+  margin: 2px;
 }
 button:hover {
   border: 0.5px solid white;
@@ -22,11 +22,11 @@ button:hover {
 
 .mode-container {
   display: flex;
-  gap: 15px;
+  gap: 2px;
 }
 .mode {
-  width: 50px;
-  height: 50px;
+  width: 35px;
+  height: 35px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -64,7 +64,7 @@ button:hover {
 /* start & reset button */
 .start-btn,
 .reset-btn {
-  width: 125px;
+  width: 90px;
   height: 25px;
   margin: 10px 20px;
 }
