@@ -90,10 +90,14 @@ const game = (() => {
    *
    * different levels of ai difficulty
    *    @function getRandomMove() - easy bot
+   *      this bot will always play the middle position if it's
+   *      available, otherwise it's completely random.
    *    @function getAvgMove() - medium bot
+   *      uses the minimax algorithm with a depth of 3 to limit
+   *      its search strength thus yielding an average move.
    *    @function getBestMove() - impossible bot
-   *
-   *
+   *      this bot uses the minimax algorithm in its full form with
+   *      the depth set to the number of possible moves available.
    */
   //easy bot
   function getRandomMove() {
