@@ -2,8 +2,8 @@ const game = (() => {
   /**
    * Game State Data
    *
-   * @var {_state} Object - private game variables / information to
-   * track the game board, mode selected, winning move indices & the
+   * @var {_state} Object -
+   * tracks the game board, mode selected, winning move indices & the
    * current terminal state (x-win, o-win, tie, live-game).
    *
    * @function getState() - for creating state-referencing variable.
@@ -86,14 +86,76 @@ const game = (() => {
   }
 
   /**
-   * AI Player Move
-   * @returns
+   * AI Move Functions
+   *
+   * different levels of ai difficulty
+   *    @function getRandomMove() - easy bot
+   *    @function getAvgMove() - medium bot
+   *    @function getBestMove() - impossible bot
+   *
+   *
    */
-  function getAiMove() {
+  //easy bot
+  function getRandomMove() {
     let availableMoves = getPossibleMoves(_state.board);
-    return availableMoves[Math.floor(Math.random() * availableMoves.length)];
+    if (availableMoves.includes(4)) {
+      return 4;
+    } else {
+      return availableMoves[Math.floor(Math.random() * availableMoves.length)];
+    }
+  }
+  // medium bot
+  function getAvgMove(state, maxSign, minSign) {
+    let avgScore = -Infinity;
+    let avgMove;
+    let possibleMoves = getPossibleMoves(state.board);
+
+    // call minimax on each possible branch of moves
+    for (let move of possibleMoves) {
+      state.board[move] = maxSign; // play move
+      let score = minimax(state, 3, false, maxSign, minSign);
+      state.board[move] = move; // undo move
+
+      // update average move
+      if (score > avgScore) {
+        avgScore = score;
+        avgMove = move;
+      }
+    }
+    return avgMove;
+  }
+  // impossible bot
+  function getBestMove(state, maxSign, minSign) {
+    // AI to make its turn
+    let bestMove;
+    let possibleMoves = getPossibleMoves(state.board);
+    let maxDepth = possibleMoves.length;
+
+    // call minimax on each possible branch of moves
+    for (let move of possibleMoves) {
+      state.board[move] = maxSign;
+      let score = minimax(state, maxDepth, false, maxSign, minSign);
+      state.board[move] = move;
+
+      // update best move
+      if (score > bestScore) {
+        bestScore = score;
+        bestMove = move;
+      }
+    }
+    return bestMove;
   }
 
+  /**
+   * Minimax Algorithm
+   *
+   * @param {*} state
+   * @param {*} depth
+   * @param {*} maximizingPlayer
+   * @param {*} maxSign
+   * @param {*} minSign
+   * @returns
+   */
   function minimax(state, depth, maximizingPlayer, maxSign, minSign) {
     // check for terminal state
     let result = checkForWinner(state);
@@ -130,29 +192,12 @@ const game = (() => {
     }
   }
 
-  function getBestMove(state, maxSign, minSign) {
-    // AI to make its turn
-    let bestScore = -Infinity;
-    let bestMove;
-    let possibleMoves = getPossibleMoves(state.board);
-    let maxDepth = possibleMoves.length;
-
-    // call minimax on each possible branch of moves
-    for (let move of possibleMoves) {
-      state.board[move] = maxSign;
-      let score = minimax(state, maxDepth, false, maxSign, minSign);
-      state.board[move] = move;
-
-      // update best move
-      if (score > bestScore) {
-        bestScore = score;
-        bestMove = move;
-      }
-    }
-
-    return bestMove;
-  }
-
+  // evaluate minimax branch
+  const scores = {
+    max: 10,
+    min: -10,
+    tie: 0,
+  };
   function evaluate(result, depth, maxSign, minSign) {
     if (result == maxSign) {
       return scores.max + depth;
@@ -162,12 +207,6 @@ const game = (() => {
       return scores.tie;
     }
   }
-
-  const scores = {
-    max: 10,
-    min: -10,
-    tie: 0,
-  };
 
   function getPossibleMoves(board) {
     return board.filter((item) => !['x', 'o'].includes(item));
@@ -198,7 +237,6 @@ const game = (() => {
         return state.terminalState;
       }
     }
-
     // check for a tie
     if (state.board.every((cell) => typeof cell !== 'number')) {
       state.terminalState = 'tie';
@@ -208,9 +246,7 @@ const game = (() => {
     return ''; // game still ongoing
   }
 
-  // all public functions
   return {
-    getBestMove,
     getState,
     resetState,
     createPlayers,
@@ -219,7 +255,9 @@ const game = (() => {
     playMove,
     checkForWinner,
     switchTurns,
-    getAiMove,
+    getRandomMove,
+    getAvgMove,
+    getBestMove,
   };
 })();
 

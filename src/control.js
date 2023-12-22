@@ -78,8 +78,8 @@ const controller = (() => {
   // Mode CvC Handler
   async function _handleAiOnlyGame(gameBoard) {
     while (state.terminalState === '') {
-      await _playAiMove(gameBoard);
-      // Add a delay if needed
+      _playAiMove(gameBoard);
+      // Delay between each ai players move
       await new Promise((resolve) => setTimeout(resolve, 250));
     }
   }
@@ -106,7 +106,15 @@ const controller = (() => {
 
     // minimax implementation
     let copiedState = JSON.parse(JSON.stringify(state));
-    let move = game.getBestMove(copiedState, curPlayer.sign, minPlayer.sign);
+    let move;
+    // if (lvl) {
+    //   move = game.getRandomMove();
+    //   console.log(`bad: ${move}`);
+    // } else {
+    //   move = game.getBestMove(copiedState, curPlayer.sign, minPlayer.sign);
+    //   console.log(`best: ${move}`);
+    // }
+    move = game.getBestMove(copiedState, curPlayer.sign, minPlayer.sign);
 
     game.playMove(state, move, curPlayer.sign);
     game.checkForWinner(state);
