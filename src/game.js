@@ -2,11 +2,15 @@ const game = (() => {
   /**
    * Game State Data
    *
-   * @var {_state} Object -
-   * tracks the game board, mode selected, winning move indices & the
-   * current terminal state (x-win, o-win, tie, live-game).
+   * @var {_state} - Object
+   *    tracks the game board, mode selected, winning move indices &
+   *    the current terminal state (x-win, o-win, tie, live-game).
    *
-   * @function getState() - for creating state-referencing variable.
+   * @function getState() - get
+   *    for creating state-referencing variable in controller module.
+   * @function resetState() - reset
+   *    for resetting state to initial values in controller module
+   *    when the user clicks the reset button.
    */
   const _state = {
     board: [0, 1, 2, 3, 4, 5, 6, 7, 8],
@@ -14,9 +18,11 @@ const game = (() => {
     winningMoves: [],
     terminalState: '',
   };
+
   function getState() {
     return _state;
   }
+
   function resetState() {
     _state.board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     _state.mode = '';
@@ -27,8 +33,13 @@ const game = (() => {
   /**
    * Player Creation Factory Function
    *
-   * @param {*} sign
-   * @param {*} isAi
+   * TODO: change how players are created
+   *    - ai property is never used
+   *    - createPlayers not needed?
+   *    - build players in controller?
+   *
+   * @param {sign} String - set sign of player
+   * @param {isAi} Boolean -
    * @returns
    */
   function _Player(sign, isAi) {
@@ -49,8 +60,10 @@ const game = (() => {
     return player;
   }
 
+  // Initialize Players
   let _player1, _player2;
 
+  // Set Player Values
   function createPlayers() {
     if (_state.mode == 'pvp') {
       _player1 = _Player('x', false);
@@ -64,6 +77,7 @@ const game = (() => {
     }
   }
 
+  // Get Players
   function getCurPlayer() {
     return _player1.turn ? _player1 : _player2;
   }
@@ -71,53 +85,56 @@ const game = (() => {
   function getOtherPlayer() {
     return _player1.turn ? _player2 : _player1;
   }
-
-  /**
-   * Play Desired Move
-   */
-  function playMove(state, move, sign) {
-    state.board[move] = sign;
-    return state;
-  }
-
+  // Switch On Move End
   function switchTurns() {
     _player1.turn = !_player1.turn;
     _player2.turn = !_player2.turn;
   }
 
   /**
+   * Play Desired Move
+   *
+   * TODO: track game variables
+   */
+  function playMove(state, move, sign) {
+    state.board[move] = sign;
+    return state;
+  }
+
+  /**
    * AI Move Functions
    *
    * different levels of ai difficulty
-   *    @function getRandomMove() - easy bot
-   *      this bot will always play the middle position if it's
-   *      available, otherwise it's completely random.
-   *    @function getAvgMove() - medium bot
-   *      uses the minimax algorithm with a depth of 3 to limit
-   *      its search strength thus yielding an average move.
-   *    @function getBestMove() - impossible bot
-   *      this bot uses the minimax algorithm in its full form with
-   *      the depth set to the number of possible moves available.
+   * @function getRandomMove() - easy bot
+   *    this bot will always play the middle position if it's
+   *    available, otherwise it's completely random.
+   * @function getAvgMove() - medium bot
+   *    uses the minimax algorithm with a depth of 3 to limit
+   *    its search strength thus yielding an average move.
+   * @function getBestMove() - impossible bot
+   *    this bot uses the minimax algorithm in its full form with
+   *    the depth set to the number of possible moves available.
    */
   //easy bot
   function getRandomMove() {
-    let availableMoves = getPossibleMoves(_state.board);
+    let availableMoves = _getPossibleMoves(_state.board);
     if (availableMoves.includes(4)) {
       return 4;
     } else {
       return availableMoves[Math.floor(Math.random() * availableMoves.length)];
     }
   }
+
   // medium bot
   function getAvgMove(state, maxSign, minSign) {
     let avgScore = -Infinity;
     let avgMove;
-    let possibleMoves = getPossibleMoves(state.board);
+    let possibleMoves = _getPossibleMoves(state.board);
 
     // call minimax on each possible branch of moves
     for (let move of possibleMoves) {
       state.board[move] = maxSign; // play move
-      let score = minimax(state, 3, false, maxSign, minSign);
+      let score = _minimax(state, 3, false, maxSign, minSign);
       state.board[move] = move; // undo move
 
       // update average move
@@ -128,17 +145,18 @@ const game = (() => {
     }
     return avgMove;
   }
+
   // impossible bot
   function getBestMove(state, maxSign, minSign) {
     // AI to make its turn
     let bestMove;
-    let possibleMoves = getPossibleMoves(state.board);
+    let possibleMoves = _getPossibleMoves(state.board);
     let maxDepth = possibleMoves.length;
 
     // call minimax on each possible branch of moves
     for (let move of possibleMoves) {
       state.board[move] = maxSign;
-      let score = minimax(state, maxDepth, false, maxSign, minSign);
+      let score = _minimax(state, maxDepth, false, maxSign, minSign);
       state.board[move] = move;
 
       // update best move
@@ -153,14 +171,18 @@ const game = (() => {
   /**
    * Minimax Algorithm
    *
-   * @param {*} state
-   * @param {*} depth
-   * @param {*} maximizingPlayer
-   * @param {*} maxSign
-   * @param {*} minSign
-   * @returns
+   * this implementation of the minimax has dynamic variables to account
+   * for game mode selection (pvc or cvc) via switching player signs based
+   * on which ai bot call the minimax function.
+   *
+   * @param {state} Object - current game state
+   * @param {depth} Number - depth of recursive search
+   * @param {maximizingPlayer} Boolean - switch turns on recursive calls
+   * @param {maxSign} String - change player signs
+   * @param {minSign} String - change player signs
+   * @returns Number - best found branch score.
    */
-  function minimax(state, depth, maximizingPlayer, maxSign, minSign) {
+  function _minimax(state, depth, maximizingPlayer, maxSign, minSign) {
     // check for terminal state
     let result = checkForWinner(state);
     if (depth === 0 || result) {
@@ -171,10 +193,10 @@ const game = (() => {
       let maxScore = -Infinity;
 
       // call minimax on each possible branch of moves
-      for (let move of getPossibleMoves(state.board)) {
+      for (let move of _getPossibleMoves(state.board)) {
         // simulate branch of moves
         state.board[move] = maxSign; // maximize `sign`
-        let curScore = minimax(state, depth - 1, false, maxSign, minSign);
+        let curScore = _minimax(state, depth - 1, false, maxSign, minSign);
         state.board[move] = move;
 
         maxScore = Math.max(maxScore, curScore);
@@ -184,10 +206,10 @@ const game = (() => {
       let minScore = Infinity;
 
       // call minimax on each possible branch of moves
-      for (let move of getPossibleMoves(state.board)) {
+      for (let move of _getPossibleMoves(state.board)) {
         // simulate branch of moves
         state.board[move] = minSign; // minimum `sign`
-        let curScore = minimax(state, depth - 1, true, maxSign, minSign);
+        let curScore = _minimax(state, depth - 1, true, maxSign, minSign);
         state.board[move] = move;
 
         minScore = Math.min(minScore, curScore);
@@ -196,12 +218,13 @@ const game = (() => {
     }
   }
 
-  // evaluate minimax branch
+  // Evaluate Minimax Branch Score
   const scores = {
     max: 10,
     min: -10,
     tie: 0,
   };
+
   function evaluate(result, depth, maxSign, minSign) {
     if (result == maxSign) {
       return scores.max + depth;
@@ -212,10 +235,24 @@ const game = (() => {
     }
   }
 
-  function getPossibleMoves(board) {
+  // AI Move Decision Helper
+  function _getPossibleMoves(board) {
     return board.filter((item) => !['x', 'o'].includes(item));
   }
 
+  /**
+   * Check For Terminal State
+   *
+   * TODO: BUG -> values winningIndices & terminalState
+   *    - accidentally modified by minimax
+   * TODO: change '' -> 'live' for better readability
+   *
+   * used to check game states after every move during an active game
+   * and also checking for terminal states in minimax move simulations.
+   *
+   * @param {state} Object - current game state
+   * @returns String - terminal state of the game ('x', 'o', 'tie', '')
+   */
   function checkForWinner(state) {
     let winConditions = [
       [0, 1, 2], // Top row

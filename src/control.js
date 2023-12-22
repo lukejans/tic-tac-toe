@@ -2,16 +2,25 @@ import { ui } from './ui.js';
 import { game } from './game.js';
 
 const controller = (() => {
-  // Reference to game state object
+  // reference to game state object
   let state = game.getState();
+
   /**
-   * UI Dependency Injection
+   * Game Initialization
    *
-   * @param {gameBoard} - array of game board positions
-   * @param {components} - object of ui components to toggle
-   * @param {buttons} - object of buttons in ui
+   * @param {gameBoard} Array - game board positions (boxes)
+   *
+   *   0 | 1 | 2     a move is played on player click by
+   *  ---+---+---    listening to what box was clicked and
+   *   3 | 4 | 5     sending the box.id to _playMove() then
+   *  ---+---+---    update the UI with _displayMove().
+   *   6 | 7 | 8
+   *
+   * @param {components} Object -  components to toggle
+   * @param {buttons} Object - buttons in ui
    */
   function init(gameBoard, components, buttons) {
+    // tic tac toe boxes
     gameBoard.forEach((box) => {
       box.addEventListener('click', function () {
         // only clickable during active games or mode with human
@@ -21,24 +30,27 @@ const controller = (() => {
         // avoid double clicks
         ui.temporarilyDisableBoard(components.boardSection);
         // play moves
-        _handlePresentHuman(gameBoard, box);
+        _humanPlayerGameFlow(gameBoard, box);
       });
     });
 
+    // start & reset buttons
     buttons.start.addEventListener('click', function () {
       // ensure mode is selected
       if (state.mode === '') {
         return;
       }
 
+      // player creation
       game.createPlayers();
       ui.toggleGameDisplay(components, buttons.start);
 
       // play computer only game
       if (state.mode === 'cvc') {
-        setTimeout(() => _handleAiOnlyGame(gameBoard), 250);
+        setTimeout(() => _cpuOnlyGame(gameBoard), 250);
       }
     });
+
     buttons.reset.addEventListener('click', function () {
       game.resetState();
 
@@ -46,22 +58,22 @@ const controller = (() => {
       ui.toggleGameDisplay(components, buttons.reset);
     });
 
-    /**
-     * Mode selection Buttons
-     */
+    // mode selection
     buttons.pvp.addEventListener('click', function () {
       state.mode = 'pvp';
     });
+
     buttons.pvc.addEventListener('click', function () {
       state.mode = 'pvc';
     });
+
     buttons.cvc.addEventListener('click', function () {
       state.mode = 'cvc';
     });
   }
 
-  // Mode PvP & PvC Handler
-  function _handlePresentHuman(gameBoard, box) {
+  // mode pvp & pvc handler
+  function _humanPlayerGameFlow(gameBoard, box) {
     let move = parseInt(box.id);
     let isLegalMove = typeof state.board[move] === 'number';
 
@@ -69,22 +81,23 @@ const controller = (() => {
     if (isLegalMove) {
       _playHumanMove(gameBoard, move);
 
+      // proceed with ai move if mode is pvc
       if (state.mode === 'pvc') {
         setTimeout(() => _playAiMove(gameBoard), 250);
       }
-    } else return;
+    } else return; // mode is pvp
   }
 
-  // Mode CvC Handler
-  async function _handleAiOnlyGame(gameBoard) {
+  // mode cvc handler
+  async function _cpuOnlyGame(gameBoard) {
     while (state.terminalState === '') {
       _playAiMove(gameBoard);
-      // Delay between each ai players move
+      // ensure delay between each ai players move
       await new Promise((resolve) => setTimeout(resolve, 250));
     }
   }
 
-  // Execute Human Move
+  // execute human move
   function _playHumanMove(gameBoard, move) {
     let curPlayer = game.getCurPlayer();
 
@@ -95,7 +108,7 @@ const controller = (() => {
     ui.updateUI(gameBoard, state);
   }
 
-  // Execute AI Move
+  // execute ai move
   function _playAiMove(gameBoard) {
     if (state.terminalState) {
       return;

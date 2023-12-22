@@ -1,11 +1,12 @@
 import { controller } from './control.js';
 
-// UI DOM Query
+// ui dom query
 const components = {
   startScreen: document.querySelector('.start-screen-container'),
   gameScreen: document.querySelector('.game-container'),
   boardSection: document.querySelector('.game-board'),
 };
+
 const buttons = {
   start: document.querySelector('#start'),
   reset: document.querySelector('#reset'),
@@ -13,6 +14,7 @@ const buttons = {
   pvc: document.querySelector('#pvc'),
   cvc: document.querySelector('#cvc'),
 };
+
 /**
  * Tic Tac Toe Game Board
  *
@@ -24,5 +26,5 @@ const buttons = {
  */
 const gameBoard = components.gameScreen.querySelectorAll('.box');
 
-// UI Dependency Injection
+// ui dependency injection
 controller.init(gameBoard, components, buttons);
