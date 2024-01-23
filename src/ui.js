@@ -6,13 +6,7 @@ const ui = (() => {
     components.gameScreen.classList.toggle('hide');
   }
 
-  /**
-   * Prevent Double Clicks
-   * @function _temporarilyDisableBtn()
-   *    @param {btn} button - disable this btn
-   * @function temporarilyDisableBoard()
-   *    @param {gameBoard} section - disable full board
-   */
+  // prevent double clicks
   function _temporarilyDisableBtn(btn) {
     btn.disabled = true;
     setTimeout(function () {
@@ -42,16 +36,7 @@ const ui = (() => {
     }
   }
 
-  /**
-   * Color Winning Positions
-   *
-   * when a terminal state is found this function will be
-   * executed once and will color the winning positions with
-   * a delay between color updates.
-   *
-   * @param {gameBoard} Array - game board positions (boxes)
-   * @param {state} Object - current game state
-   */
+  // indicate where the win occurred
   function _colorPositionsOnWin(gameBoard, state) {
     if (state.terminalState === 'x' || state.terminalState === 'o') {
       for (let i = 0; i < 3; i++) {
@@ -62,7 +47,6 @@ const ui = (() => {
     }
   }
 
-  // loops through game board ui to reset values
   function resetBoard(gameBoard) {
     setTimeout(() => {
       for (let i = 0; i < 9; i++) {

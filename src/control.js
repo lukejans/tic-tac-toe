@@ -1,3 +1,4 @@
+// import all modules to controller
 import { ui } from './ui.js';
 import { game } from './game.js';
 
@@ -8,29 +9,20 @@ const controller = (() => {
   /**
    * Game Initialization
    *
-   * @param {gameBoard} Array - game board positions (boxes)
-   *
-   *   0 | 1 | 2     a move is played on player click by
-   *  ---+---+---    listening to what box was clicked and
-   *   3 | 4 | 5     sending the box.id to _playMove() then
-   *  ---+---+---    update the UI with _displayMove().
-   *   6 | 7 | 8
-   *
-   * @param {components} Object -  components to toggle
-   * @param {buttons} Object - buttons in ui
+   * {gameBoard} Array - game board positions (boxes)
+   * {components} Object -  components to toggle
+   * {buttons} Object - buttons in ui
    */
   function init(gameBoard, components, buttons) {
-    // tic tac toe boxes
+    // for playing moves on box clicks
     gameBoard.forEach((box) => {
       box.addEventListener('click', function () {
-        // only clickable during active games or mode with human
+        // only clickable during active games including a human
         if (state.terminalState || state.mode === 'cvc') {
           return;
         }
-        // avoid double clicks
-        ui.temporarilyDisableBoard(components.boardSection);
-        // play moves
-        _humanPlayerGameFlow(gameBoard, box);
+        ui.temporarilyDisableBoard(components.boardSection); // avoid double clicks
+        _humanPlayerGameFlow(gameBoard, box); // play move
       });
     });
 
@@ -50,10 +42,8 @@ const controller = (() => {
         setTimeout(() => _cpuOnlyGame(gameBoard), 250);
       }
     });
-
     buttons.reset.addEventListener('click', function () {
       game.resetState();
-
       ui.resetBoard(gameBoard);
       ui.toggleGameDisplay(components, buttons.reset);
     });
@@ -62,11 +52,9 @@ const controller = (() => {
     buttons.pvp.addEventListener('click', function () {
       state.mode = 'pvp';
     });
-
     buttons.pvc.addEventListener('click', function () {
       state.mode = 'pvc';
     });
-
     buttons.cvc.addEventListener('click', function () {
       state.mode = 'cvc';
     });
@@ -84,8 +72,8 @@ const controller = (() => {
       // proceed with ai move if mode is pvc
       if (state.mode === 'pvc') {
         setTimeout(() => _playAiMove(gameBoard), 250);
-      }
-    } else return; // mode is pvp
+      } else return; // mode is pvp
+    }
   }
 
   // mode cvc handler
