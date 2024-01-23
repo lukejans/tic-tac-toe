@@ -150,6 +150,7 @@ const game = (() => {
   function getBestMove(state, maxSign, minSign) {
     // AI to make its turn
     let bestMove;
+    let bestScore = -Infinity;
     let possibleMoves = _getPossibleMoves(state.board);
     let maxDepth = possibleMoves.length;
 
@@ -195,7 +196,7 @@ const game = (() => {
       // call minimax on each possible branch of moves
       for (let move of _getPossibleMoves(state.board)) {
         // simulate branch of moves
-        state.board[move] = maxSign; // maximize `sign`
+        state.board[move] = maxSign;
         let curScore = _minimax(state, depth - 1, false, maxSign, minSign);
         state.board[move] = move;
 
@@ -208,7 +209,7 @@ const game = (() => {
       // call minimax on each possible branch of moves
       for (let move of _getPossibleMoves(state.board)) {
         // simulate branch of moves
-        state.board[move] = minSign; // minimum `sign`
+        state.board[move] = minSign;
         let curScore = _minimax(state, depth - 1, true, maxSign, minSign);
         state.board[move] = move;
 
@@ -296,9 +297,9 @@ const game = (() => {
     playMove,
     checkForWinner,
     switchTurns,
-    getRandomMove,
-    getAvgMove,
-    getBestMove,
+    getRandomMove, // easy
+    getAvgMove, // medium
+    getBestMove, // impossible
   };
 })();
 
