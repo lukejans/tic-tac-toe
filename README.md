@@ -1,14 +1,14 @@
-# **📁 [Project: Tic Tac Toe](https://www.theodinproject.com/lessons/node-path-javascript-tic-tac-toe)**
-
 <div align="center">
 
-```
+# **[Project: Tic Tac Toe](https://www.theodinproject.com/lessons/node-path-javascript-tic-tac-toe)**
+
+<pre>
    0 | 1 | 2
    ---+---+---
    3 | 4 | 5
    ---+---+---
    6 | 7 | 8
-```
+</pre>
 
 </div>
 
